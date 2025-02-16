@@ -57,7 +57,7 @@ export default function NewVisitForm({ patientId, onClose, onSave }) {
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-neutral-100 bg-opacity-50 flex items-center justify-center">
             <div className="bg-white p-6 rounded-lg w-[800px] max-h-[90vh] overflow-y-auto">
                 <h2 className="text-xl font-bold mb-4">New Visit Record</h2>
 

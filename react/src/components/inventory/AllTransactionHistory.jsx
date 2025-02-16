@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import axiosClient from "../../axios-client";
 import { ArrowUpRight, ArrowDownRight, Search } from "lucide-react";
+import Loading from "../Loading";
 
 export default function AllTransactionHistory() {
     const [transactions, setTransactions] = useState([]);
@@ -37,7 +38,7 @@ export default function AllTransactionHistory() {
                 .includes(searchTerm.toLowerCase())
     );
 
-    if (loading) return <div>Loading transactions...</div>;
+    if (loading) return <Loading />;
     if (error) return <div className="text-red-500">{error}</div>;
 
     return (

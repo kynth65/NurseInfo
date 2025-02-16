@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axiosClient from "../../axios-client";
+import Loading from "../Loading";
 
 export default function PatientDetails() {
     const { id } = useParams();
@@ -23,7 +24,7 @@ export default function PatientDetails() {
         }
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <Loading />;
     if (error) return <div className="text-red-500">{error}</div>;
     if (!patient) return <div>Patient not found</div>;
 

@@ -65,6 +65,20 @@ class VisitController extends Controller
         ]);
     }
 
+    public function getLatestVisits()
+    {
+        $latestVisits = Visit::select('patient_id')
+            ->selectRaw('MAX(created_at) as latest_visit')
+            ->groupBy('patient_id')
+            ->get()
+            ->pluck('latest_visit', 'patient_id')
+            ->toArray();
+
+        return response()->json([
+            'latestVisits' => $latestVisits
+        ]);
+    }
+
     public function destroy(Patient $patient, Visit $visit)
     {
         $visit->delete();

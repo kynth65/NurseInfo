@@ -3,6 +3,7 @@ import axiosClient from "../../axios-client";
 import { Plus, Search } from "lucide-react";
 import PatientTable from "./PatientTable";
 import NewPatientModal from "./NewPatientModal";
+import Loading from "../Loading";
 
 export default function PatientsList() {
     const [patients, setPatients] = useState([]);
@@ -41,7 +42,7 @@ export default function PatientsList() {
         setShowNewPatientModal(false);
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <Loading />;
     if (error) return <div className="text-red-500">{error}</div>;
 
     return (

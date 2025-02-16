@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import axiosClient from "../../axios-client";
-import { Plus } from "lucide-react";
+import { Plus, Download } from "lucide-react";
 import { format } from "date-fns";
 import NewVisitForm from "./NewVisitForm";
+import Loading from "../Loading";
+import html2pdf from "html2pdf.js";
 
 export default function PatientView() {
     const { id } = useParams();
@@ -30,8 +32,141 @@ export default function PatientView() {
             setLoading(false);
         }
     };
+    const generatePDF = () => {
+        // Create a new div for PDF content
+        const pdfContent = document.createElement("div");
+        pdfContent.innerHTML = `
+            <div style="padding: 20px; font-family: Arial, sans-serif;">
+                <h1 style="font-size: 24px; margin-bottom: 20px;">${
+                    patient.full_name
+                } - Medical Record</h1>
+                
+                <div style="margin-bottom: 20px;">
+                    <h2 style="font-size: 18px; margin-bottom: 10px;">Personal Information</h2>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <td style="padding: 5px; width: 150px;"><strong>Date of Birth:</strong></td>
+                            <td style="padding: 5px;">${format(
+                                new Date(patient.date_of_birth),
+                                "MMM d, yyyy"
+                            )}</td>
+                            <td style="padding: 5px; width: 150px;"><strong>Gender:</strong></td>
+                            <td style="padding: 5px;">${patient.gender}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;"><strong>Civil Status:</strong></td>
+                            <td style="padding: 5px;">${
+                                patient.civil_status
+                            }</td>
+                            <td style="padding: 5px;"><strong>Blood Type:</strong></td>
+                            <td style="padding: 5px;">${
+                                patient.blood_type || "Not specified"
+                            }</td>
+                        </tr>
+                    </table>
+                </div>
 
-    if (loading) return <div>Loading...</div>;
+                <div style="margin-bottom: 20px;">
+                    <h2 style="font-size: 18px; margin-bottom: 10px;">Contact Information</h2>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <td style="padding: 5px; width: 150px;"><strong>Contact Number:</strong></td>
+                            <td style="padding: 5px;">${
+                                patient.contact_number
+                            }</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;"><strong>Email:</strong></td>
+                            <td style="padding: 5px;">${
+                                patient.email || "Not provided"
+                            }</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;"><strong>Address:</strong></td>
+                            <td style="padding: 5px;">${patient.address}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h2 style="font-size: 18px; margin-bottom: 10px;">Medical History</h2>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <td style="padding: 5px; width: 150px;"><strong>Past Illnesses:</strong></td>
+                            <td style="padding: 5px;">${
+                                patient.past_illnesses || "None recorded"
+                            }</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;"><strong>Allergies:</strong></td>
+                            <td style="padding: 5px;">${
+                                patient.allergies || "None recorded"
+                            }</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;"><strong>Current Medications:</strong></td>
+                            <td style="padding: 5px;">${
+                                patient.current_medications || "None recorded"
+                            }</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h2 style="font-size: 18px; margin-bottom: 10px;">Visit History</h2>
+                    <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+                        <thead>
+                            <tr style="background-color: #f5f5f5;">
+                                <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Date</th>
+                                <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Vital Signs</th>
+                                <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Present Illness</th>
+                                <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Diagnosis</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${visits
+                                .map(
+                                    (visit) => `
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">${format(
+                                        new Date(visit.created_at),
+                                        "MMM d, yyyy"
+                                    )}</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">
+                                        BP: ${visit.blood_pressure}<br>
+                                        HR: ${visit.heart_rate} bpm<br>
+                                        Temp: ${visit.temperature}°C
+                                    </td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">${
+                                        visit.present_illness
+                                    }</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">${
+                                        visit.diagnosis
+                                    }</td>
+                                </tr>
+                            `
+                                )
+                                .join("")}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+
+        // Configure PDF options
+        const opt = {
+            margin: 1,
+            filename: `${patient.full_name}_medical_record.pdf`,
+            image: { type: "jpeg", quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+        };
+
+        // Generate PDF
+        html2pdf().from(pdfContent).set(opt).save();
+    };
+
+    if (loading) return <Loading />;
     if (!patient) return <div>Patient not found</div>;
 
     return (
@@ -40,15 +175,23 @@ export default function PatientView() {
                 {/* Header with patient name and add visit button */}
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-2xl font-bold">{patient.full_name}</h1>
-                    <button
-                        onClick={() => setShowNewVisitForm(true)}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
-                    >
-                        <Plus className="w-4 h-4" />
-                        New Visit
-                    </button>
+                    <div className="flex gap-2">
+                        <button
+                            onClick={() => generatePDF()}
+                            className="bg-violet-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                        >
+                            <Download className="w-4 h-4" />
+                            Download PDF
+                        </button>
+                        <button
+                            onClick={() => setShowNewVisitForm(true)}
+                            className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                        >
+                            <Plus className="w-4 h-4" />
+                            New Visit
+                        </button>
+                    </div>
                 </div>
-
                 {/* Patient Information Sections */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     {/* Personal Information */}
@@ -178,7 +321,6 @@ export default function PatientView() {
                         </div>
                     </div>
                 </div>
-
                 {/* Visits History */}
                 <div className="bg-white p-6 rounded-lg shadow">
                     <h2 className="text-lg font-semibold mb-4">

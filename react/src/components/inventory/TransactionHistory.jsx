@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import axiosClient from "../../axios-client";
 import { ArrowUpRight, ArrowDownRight } from "lucide-react";
+import Loading from "../Loading";
 
 export default function TransactionHistory({ medicineId, onClose }) {
     const [transactions, setTransactions] = useState([]);
@@ -25,11 +26,11 @@ export default function TransactionHistory({ medicineId, onClose }) {
         }
     };
 
-    if (loading) return <div>Loading transactions...</div>;
+    if (loading) return <Loading />;
     if (error) return <div className="text-red-500">{error}</div>;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-neutral-100 bg-opacity-50 flex items-center justify-center">
             <div className="bg-white p-6 rounded-lg w-full max-w-2xl max-h-[80vh] overflow-y-auto">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-bold">Transaction History</h2>

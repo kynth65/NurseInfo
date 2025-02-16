@@ -9,7 +9,6 @@ import MedicineList from "./components/inventory/MedicineList";
 import AllTransactionHistory from "./components/inventory/AllTransactionHistory";
 
 import PatientsList from "./components/patients/PatientsList";
-import PatientDetails from "./components/patients/PatientDetails";
 import NewPatientModal from "./components/patients/NewPatientModal";
 import EditPatient from "./components/patients/EditPatient";
 import PatientView from "./components/patients/PatientView";
@@ -53,10 +52,7 @@ const router = createBrowserRouter([
                 path: "/patients/:id/edit",
                 element: <EditPatient />,
             },
-            {
-                path: "/patients/:id",
-                element: <PatientDetails />,
-            },
+
             {
                 path: "/patients/:id/visits/new",
                 element: <NewPatientModal />,

@@ -1,6 +1,8 @@
 import { Edit, Trash2, Eye } from "lucide-react";
-import { format, differenceInYears } from "date-fns"; // Import differenceInYears
-import { Link } from "react-router-dom"; // Import Link for edit navigation
+import { format, differenceInYears } from "date-fns";
+import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import axiosClient from "../../axios-client";
 
 export default function PatientTable({
     patients,
@@ -8,6 +10,22 @@ export default function PatientTable({
     onRefresh,
     onDelete,
 }) {
+    const [latestVisits, setLatestVisits] = useState({});
+
+    useEffect(() => {
+        // Fetch only the latest visit dates for all patients in one request
+        const fetchLatestVisits = async () => {
+            try {
+                const response = await axiosClient.get("/visits/latest");
+                setLatestVisits(response.data.latestVisits);
+            } catch (err) {
+                console.error("Failed to fetch latest visits:", err);
+            }
+        };
+
+        fetchLatestVisits();
+    }, []);
+
     const calculateAge = (dateOfBirth) => {
         return differenceInYears(new Date(), new Date(dateOfBirth));
     };
@@ -28,7 +46,7 @@ export default function PatientTable({
             patient.full_name
                 .toLowerCase()
                 .includes(searchTerm.toLowerCase()) ||
-            patient.contact_number.includes(searchTerm)
+            patient.id.toString().includes(searchTerm)
     );
 
     return (
@@ -36,6 +54,9 @@ export default function PatientTable({
             <table className="min-w-full">
                 <thead className="bg-gray-50">
                     <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            ID
+                        </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Name
                         </th>
@@ -57,6 +78,11 @@ export default function PatientTable({
                     {filteredPatients.map((patient) => (
                         <tr key={patient.id}>
                             <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm text-gray-500">
+                                    {patient.id}
+                                </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="font-medium text-gray-900">
                                     {patient.full_name}
                                 </div>
@@ -72,9 +98,9 @@ export default function PatientTable({
                                 </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                {patient.latest_visit
+                                {latestVisits[patient.id]
                                     ? format(
-                                          new Date(patient.latest_visit),
+                                          new Date(latestVisits[patient.id]),
                                           "MMM d, yyyy"
                                       )
                                     : "No visits yet"}

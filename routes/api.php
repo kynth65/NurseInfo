@@ -46,6 +46,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('patients.visits', VisitController::class);
     // Get patient's latest visit
     Route::get('patients/{patient}/latest-visit', [PatientController::class, 'latestVisit']);
+    // Get patient's latest visit
+    Route::get('visits/latest', [VisitController::class, 'getLatestVisits']);
     // Get patient statistics
     Route::get('patients/statistics', [PatientController::class, 'statistics']);
     // Get patient's medical history
