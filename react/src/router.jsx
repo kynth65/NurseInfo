@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import GuestLayout from "./layouts/GuestLayout";
 import DefaultLayout from "./layouts/DefaultLayout";
-import Login from "./pages/login";
+import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 
@@ -12,6 +12,7 @@ import PatientsList from "./components/patients/PatientsList";
 import NewPatientModal from "./components/patients/NewPatientModal";
 import EditPatient from "./components/patients/EditPatient";
 import PatientView from "./components/patients/PatientView";
+import Events from "./components/events/Events";
 
 const router = createBrowserRouter([
     {
@@ -60,6 +61,10 @@ const router = createBrowserRouter([
             {
                 path: "/patients/:id/view",
                 element: <PatientView />,
+            },
+            {
+                path: "/events",
+                element: <Events />,
             },
         ],
     },

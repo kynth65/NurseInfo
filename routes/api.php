@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\MedicineController;
 use App\Http\Controllers\Api\InventoryTransactionController;
 use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\VisitController;
+use App\Http\Controllers\EventController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,3 +58,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Update patient's medical history
     Route::patch('patients/{patient}/medical-history', [PatientController::class, 'updateMedicalHistory']);
 });
+
+
+
+Route::apiResource('events', EventController::class);
+
