@@ -11,6 +11,7 @@ import {
     ChevronRight,
     LayoutDashboard,
     UserPlus,
+    User,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -61,7 +62,7 @@ export default function GuestLayout() {
             description: "Manage patient queue",
         },
         {
-            path: "/sickness-tally",
+            path: "/sickness",
             name: "Sickness Tally",
             icon: <Activity className="w-6 h-6" />,
             description: "Track health conditions",
@@ -95,7 +96,6 @@ export default function GuestLayout() {
                             )}
                         </button>
                     </div>
-
                     {/* Navigation Links */}
                     <nav className="flex-1 overflow-y-auto py-4">
                         {menuItems.map((item) => {
@@ -129,28 +129,28 @@ export default function GuestLayout() {
                             );
                         })}
                     </nav>
-
                     {/* User Info */}
-                    {!isCollapsed && (
-                        <div className="p-4 border-t">
+                    <div className="p-4 border-t">
+                        <Link to="/profile">
                             <div className="flex items-center">
                                 <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white">
                                     {user?.name?.[0]?.toUpperCase() || "U"}
                                 </div>
-                                <div className="ml-3">
-                                    <p className="font-medium text-sm">
-                                        {user?.name || "User"}
-                                    </p>
-                                    <p className="text-xs text-gray-500">
-                                        {user?.email || "user@example.com"}
-                                    </p>
-                                </div>
+                                {!isCollapsed && (
+                                    <div className="ml-3">
+                                        <p className="font-medium text-sm">
+                                            {user?.name || "User"}
+                                        </p>
+                                        <p className="text-xs text-gray-500">
+                                            Barangay Health Worker
+                                        </p>
+                                    </div>
+                                )}
                             </div>
-                        </div>
-                    )}
+                        </Link>
+                    </div>
                 </div>
             </div>
-
             {/* Main Content */}
             <div className="flex-1 overflow-x-hidden overflow-y-auto">
                 <Outlet />

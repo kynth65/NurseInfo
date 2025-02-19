@@ -4,6 +4,7 @@ import DefaultLayout from "./layouts/DefaultLayout";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/User/Profile";
 
 import MedicineList from "./components/inventory/MedicineList";
 import AllTransactionHistory from "./components/inventory/AllTransactionHistory";
@@ -13,12 +14,33 @@ import NewPatientModal from "./components/patients/NewPatientModal";
 import EditPatient from "./components/patients/EditPatient";
 import PatientView from "./components/patients/PatientView";
 import Events from "./components/events/Events";
+import SicknessTally from "./components/sickness/SicknessTallyDashboard";
+import Homepage from "./pages/Homepage";
+import Services from "./components/Services";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: <GuestLayout />,
         children: [
+            {
+                path: "/",
+                element: <Homepage />,
+            },
+            {
+                path: "/services",
+                element: <Services />,
+            },
+            {
+                path: "/about",
+                element: <About />,
+            },
+            {
+                path: "/contact",
+                element: <Contact />,
+            },
             {
                 path: "login",
                 element: <Login />,
@@ -36,6 +58,10 @@ const router = createBrowserRouter([
             {
                 path: "/dashboard",
                 element: <Dashboard />,
+            },
+            {
+                path: "/profile",
+                element: <Profile />,
             },
             {
                 path: "/inventory",
@@ -65,6 +91,10 @@ const router = createBrowserRouter([
             {
                 path: "/events",
                 element: <Events />,
+            },
+            {
+                path: "/sickness",
+                element: <SicknessTally />,
             },
         ],
     },
