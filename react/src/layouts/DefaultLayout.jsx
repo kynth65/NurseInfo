@@ -79,7 +79,7 @@ export default function GuestLayout() {
             >
                 <div className="flex flex-col h-full">
                     {/* Sidebar Header */}
-                    <div className="flex items-center justify-between p-4 border-b">
+                    <div className="flex items-center justify-between p-4 ">
                         {!isCollapsed && (
                             <h2 className="text-xl font-semibold text-gray-800">
                                 NurseInfo

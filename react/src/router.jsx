@@ -19,6 +19,7 @@ import Homepage from "./pages/Homepage";
 import Services from "./components/Services";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import VaccinationDashboard from "./components/vaccination/VaccinationDashboard";
 
 const router = createBrowserRouter([
     {
@@ -95,6 +96,10 @@ const router = createBrowserRouter([
             {
                 path: "/sickness",
                 element: <SicknessTally />,
+            },
+            {
+                path: "/vaccination",
+                element: <VaccinationDashboard />,
             },
         ],
     },
