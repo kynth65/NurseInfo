@@ -20,6 +20,7 @@ import Services from "./components/Services";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import VaccinationDashboard from "./components/vaccination/VaccinationDashboard";
+import Queue from "./components/queue/Queue";
 
 const router = createBrowserRouter([
     {
@@ -92,6 +93,10 @@ const router = createBrowserRouter([
             {
                 path: "/events",
                 element: <Events />,
+            },
+            {
+                path: "/queue",
+                element: <Queue />,
             },
             {
                 path: "/sickness",
