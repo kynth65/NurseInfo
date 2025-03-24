@@ -10,7 +10,8 @@ class PatientController extends Controller
 {
     public function index()
     {
-        $patients = Patient::with('visits')->get();
+        // Add family to the eager loading to display family info in patient table
+        $patients = Patient::with(['visits', 'family'])->get();
         return response()->json([
             'patients' => $patients
         ]);
@@ -40,20 +41,22 @@ class PatientController extends Controller
             'current_medications' => 'nullable|string',
             'previous_surgeries' => 'nullable|string',
             'previous_hospitalizations' => 'nullable|string',
-            'immunization_history' => 'nullable|string'
+            'immunization_history' => 'nullable|string',
+            'family_id' => 'nullable|exists:families,id', // Allow setting family during creation
         ]);
 
         $patient = Patient::create($validated);
 
         return response()->json([
-            'patient' => $patient
+            'patient' => $patient->load(['visits', 'family']) // Load relationships for the response
         ], 201);
     }
 
     public function show(Patient $patient)
     {
+        // Add family to the eager loading
         return response()->json([
-            'patient' => $patient->load('visits')
+            'patient' => $patient->load(['visits', 'family'])
         ]);
     }
 
@@ -81,13 +84,14 @@ class PatientController extends Controller
             'current_medications' => 'nullable|string',
             'previous_surgeries' => 'nullable|string',
             'previous_hospitalizations' => 'nullable|string',
-            'immunization_history' => 'nullable|string'
+            'immunization_history' => 'nullable|string',
+            'family_id' => 'nullable|exists:families,id', // Allow updating family during edit
         ]);
 
         $patient->update($validated);
 
         return response()->json([
-            'patient' => $patient
+            'patient' => $patient->load(['visits', 'family']) // Load relationships for the response
         ]);
     }
 
