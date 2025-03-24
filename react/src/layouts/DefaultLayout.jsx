@@ -11,6 +11,7 @@ import {
     ChevronRight,
     LayoutDashboard,
     UserPlus,
+    Home,
     User,
 } from "lucide-react";
 import { useState } from "react";
@@ -30,6 +31,12 @@ export default function GuestLayout() {
             name: "Dashboard",
             icon: <LayoutDashboard className="w-6 h-6" />,
             description: "Overview and analytics",
+        },
+        {
+            path: "/families",
+            name: "Families",
+            icon: <Home className="w-6 h-6" />,
+            description: "Manage family units",
         },
         {
             path: "/patients",

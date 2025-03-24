@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\MedicineController;
 use App\Http\Controllers\Api\InventoryTransactionController;
 use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\VisitController;
+use App\Http\Controllers\Api\FamilyController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ProfileController;
 
@@ -64,6 +65,15 @@ Route::middleware('auth:sanctum')->group(function () {
     // Update patient's medical history
     Route::patch('patients/{patient}/medical-history', [PatientController::class, 'updateMedicalHistory']);
 });
+
+// Family routes
+Route::apiResource('families', FamilyController::class);
+Route::post('families/{family}/add-patient', [FamilyController::class, 'addPatient']);
+Route::post('families/{family}/remove-patient', [FamilyController::class, 'removePatient']);
+
+// Patient family routes
+Route::patch('patients/{patient}/family', [PatientController::class, 'updateFamily']);
+Route::get('patients/{patient}/family-members', [PatientController::class, 'getFamilyMembers']);
 
 
 

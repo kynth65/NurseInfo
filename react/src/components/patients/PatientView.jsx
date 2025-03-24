@@ -1,18 +1,21 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import axiosClient from "../../axios-client";
-import { Plus, Download } from "lucide-react";
+import { Plus, Download, Users, UserPlus } from "lucide-react";
 import { format } from "date-fns";
 import NewVisitForm from "./NewVisitForm";
 import Loading from "../Loading";
 import html2pdf from "html2pdf.js";
+import { SelectFamilyModal } from "../families/SelectFamilyModal";
 
 export default function PatientView() {
     const { id } = useParams();
     const [patient, setPatient] = useState(null);
     const [visits, setVisits] = useState([]);
+    const [familyMembers, setFamilyMembers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showNewVisitForm, setShowNewVisitForm] = useState(false);
+    const [showFamilyModal, setShowFamilyModal] = useState(false);
 
     useEffect(() => {
         loadPatientAndVisits();
@@ -26,12 +29,61 @@ export default function PatientView() {
             ]);
             setPatient(patientRes.data.patient);
             setVisits(visitsRes.data.visits);
+
+            // If patient has a family, load family members
+            if (patientRes.data.patient.family_id) {
+                loadFamilyMembers(patientRes.data.patient.family_id);
+            }
         } catch (err) {
             console.error("Failed to load data:", err);
         } finally {
             setLoading(false);
         }
     };
+
+    const loadFamilyMembers = async (familyId) => {
+        try {
+            const response = await axiosClient.get(`/families/${familyId}`);
+            // Filter out current patient from family members
+            const members = response.data.family.patients.filter(
+                (member) => member.id !== parseInt(id)
+            );
+            setFamilyMembers(members);
+        } catch (err) {
+            console.error("Failed to load family members:", err);
+        }
+    };
+
+    const handleAddToFamily = async (familyId) => {
+        try {
+            await axiosClient.patch(`/patients/${id}/family`, {
+                family_id: familyId,
+            });
+            loadPatientAndVisits();
+            setShowFamilyModal(false);
+        } catch (err) {
+            console.error("Failed to add patient to family:", err);
+        }
+    };
+
+    const handleRemoveFromFamily = async () => {
+        if (
+            !confirm(
+                "Are you sure you want to remove this patient from their family?"
+            )
+        )
+            return;
+
+        try {
+            await axiosClient.patch(`/patients/${id}/family`, {
+                family_id: null,
+            });
+            loadPatientAndVisits();
+        } catch (err) {
+            console.error("Failed to remove patient from family:", err);
+        }
+    };
+
     const generatePDF = () => {
         // Create a new div for PDF content
         const pdfContent = document.createElement("div");
@@ -63,6 +115,18 @@ export default function PatientView() {
                                 patient.blood_type || "Not specified"
                             }</td>
                         </tr>
+                        ${
+                            patient.family_id
+                                ? `<tr>
+                                <td style="padding: 5px;"><strong>Family Number:</strong></td>
+                                <td style="padding: 5px;" colspan="3">${
+                                    patient.family
+                                        ? patient.family.family_number
+                                        : "Not available"
+                                }</td>
+                            </tr>`
+                                : ""
+                        }
                     </table>
                 </div>
 
@@ -172,7 +236,7 @@ export default function PatientView() {
     return (
         <div className="p-6">
             <div className="max-w-7xl mx-auto">
-                {/* Header with patient name and add visit button */}
+                {/* Header with patient name and buttons */}
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-2xl font-bold">{patient.full_name}</h1>
                     <div className="flex gap-2">
@@ -190,8 +254,26 @@ export default function PatientView() {
                             <Plus className="w-4 h-4" />
                             New Visit
                         </button>
+                        {!patient.family_id ? (
+                            <button
+                                onClick={() => setShowFamilyModal(true)}
+                                className="bg-green-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                            >
+                                <Users className="w-4 h-4" />
+                                Add to Family
+                            </button>
+                        ) : (
+                            <button
+                                onClick={handleRemoveFromFamily}
+                                className="bg-red-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                            >
+                                <Users className="w-4 h-4" />
+                                Remove from Family
+                            </button>
+                        )}
                     </div>
                 </div>
+
                 {/* Patient Information Sections */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     {/* Personal Information */}
@@ -229,6 +311,24 @@ export default function PatientView() {
                                 </p>
                                 <p>{patient.blood_type || "Not specified"}</p>
                             </div>
+                            {patient.family_id && (
+                                <div className="col-span-2">
+                                    <p className="text-sm text-gray-600">
+                                        Family
+                                    </p>
+                                    <div className="flex items-center">
+                                        <Link
+                                            to={`/families/${patient.family_id}`}
+                                            className="text-blue-600 hover:text-blue-800"
+                                        >
+                                            {patient.family
+                                                ? patient.family.family_number
+                                                : "Family #" +
+                                                  patient.family_id}
+                                        </Link>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -321,6 +421,36 @@ export default function PatientView() {
                         </div>
                     </div>
                 </div>
+
+                {/* Family Members Section - Only show if patient has a family */}
+                {patient.family_id && familyMembers.length > 0 && (
+                    <div className="bg-white p-6 rounded-lg shadow mb-6">
+                        <h2 className="text-lg font-semibold mb-4">
+                            Family Members
+                        </h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {familyMembers.map((member) => (
+                                <Link
+                                    key={member.id}
+                                    to={`/patients/${member.id}`}
+                                    className="block p-4 border rounded-lg hover:bg-gray-50"
+                                >
+                                    <div className="font-medium">
+                                        {member.full_name}
+                                    </div>
+                                    <div className="text-sm text-gray-600">
+                                        {format(
+                                            new Date(member.date_of_birth),
+                                            "MMM d, yyyy"
+                                        )}{" "}
+                                        • {member.gender}
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
                 {/* Visits History */}
                 <div className="bg-white p-6 rounded-lg shadow">
                     <h2 className="text-lg font-semibold mb-4">
@@ -387,6 +517,14 @@ export default function PatientView() {
                         setShowNewVisitForm(false);
                         loadPatientAndVisits();
                     }}
+                />
+            )}
+
+            {/* Family Modal */}
+            {showFamilyModal && (
+                <SelectFamilyModal
+                    onClose={() => setShowFamilyModal(false)}
+                    onSelectFamily={handleAddToFamily}
                 />
             )}
         </div>

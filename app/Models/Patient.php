@@ -1,14 +1,10 @@
 <?php
-
 namespace App\Models;
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 class Patient extends Model
 {
     use HasFactory;
-
     protected $fillable = [
         'full_name',
         'date_of_birth',
@@ -33,22 +29,40 @@ class Patient extends Model
         'smoking_history',
         'alcohol_consumption',
         'exercise_habits',
-        'diet_restrictions'
+        'diet_restrictions',
+        // New field for family
+        'family_id'
     ];
-
+    
     protected $casts = [
         'date_of_birth' => 'date',
     ];
-
+    
     // Calculate age from date_of_birth
     public function getAgeAttribute()
     {
         return $this->date_of_birth->age;
     }
-
+    
     // Relationship with visits
     public function visits()
     {
         return $this->hasMany(Visit::class);
+    }
+    
+    // Relationship with family
+    public function family()
+    {
+        return $this->belongsTo(Family::class);
+    }
+    
+    // Get family members excluding this patient
+    public function familyMembers()
+    {
+        if (!$this->family_id) {
+            return collect();
+        }
+        
+        return $this->family->patients()->where('id', '!=', $this->id)->get();
     }
 }

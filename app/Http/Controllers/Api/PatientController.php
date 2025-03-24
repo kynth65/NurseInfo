@@ -106,4 +106,30 @@ class PatientController extends Controller
             'visit' => $latestVisit
         ]);
     }
+
+    public function updateFamily(Request $request, Patient $patient)
+    {
+        $validated = $request->validate([
+            'family_id' => 'nullable|exists:families,id',
+        ]);
+
+        $patient->update(['family_id' => $validated['family_id']]);
+        return response()->json([
+            'patient' => $patient->load('family.patients')
+        ]);
+    }
+
+    public function getFamilyMembers(Patient $patient)
+    {
+        if (!$patient->family_id) {
+            return response()->json([
+                'family_members' => []
+            ]);
+        }
+
+        $familyMembers = $patient->familyMembers();
+        return response()->json([
+            'family_members' => $familyMembers
+        ]);
+    }
 }

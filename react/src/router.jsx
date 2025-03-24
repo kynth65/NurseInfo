@@ -22,6 +22,11 @@ import Contact from "./pages/Contact";
 import VaccinationDashboard from "./components/vaccination/VaccinationDashboard";
 import Queue from "./components/queue/Queue";
 
+// Import family components
+import FamilyList from "./components/families/FamilyList";
+import { FamilyView } from "./components/families/FamilyView";
+import FamilyForm from "./components/families/FamilyForm";
+
 const router = createBrowserRouter([
     {
         path: "/",
@@ -77,11 +82,15 @@ const router = createBrowserRouter([
                 path: "/patients",
                 element: <PatientsList />,
             },
+            // Add direct route for patients by ID
+            {
+                path: "/patients/:id",
+                element: <PatientView />,
+            },
             {
                 path: "/patients/:id/edit",
                 element: <EditPatient />,
             },
-
             {
                 path: "/patients/:id/visits/new",
                 element: <NewPatientModal />,
@@ -89,6 +98,23 @@ const router = createBrowserRouter([
             {
                 path: "/patients/:id/view",
                 element: <PatientView />,
+            },
+            // Family routes
+            {
+                path: "/families",
+                element: <FamilyList />,
+            },
+            {
+                path: "/families/new",
+                element: <FamilyForm key="familyCreate" />,
+            },
+            {
+                path: "/families/:id",
+                element: <FamilyView />,
+            },
+            {
+                path: "/families/:id/edit",
+                element: <FamilyForm key="familyUpdate" />,
             },
             {
                 path: "/events",
