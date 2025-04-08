@@ -26,7 +26,7 @@ export default function Navbar() {
                         >
                             <Heart className="h-8 w-8 text-purple-600" />
                             <span className="ml-2 text-xl font-bold text-gray-800">
-                                NurseInfo
+                                HEAL
                             </span>
                         </Link>
                     </div>
