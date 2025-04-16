@@ -17,6 +17,8 @@ import {
     X,
     Heart, // Importing an icon for the title
 } from "lucide-react";
+import { FaHandHoldingMedical } from "react-icons/fa";
+
 import { useState, useEffect } from "react";
 
 export default function DefaultLayout() {
@@ -106,7 +108,8 @@ export default function DefaultLayout() {
         <div className="flex flex-col h-full">
             <div className="flex items-center justify-between p-4 bg-gradient-to-br from-purple-600 to-purple-800">
                 <div className="flex items-center">
-                    <Heart className="w-8 h-8 text-white" /> {/* Heart icon */}
+                    <FaHandHoldingMedical className="w-8 h-8 text-white" />{" "}
+                    {/* Heart icon */}
                     {!isCollapsed && (
                         <h2 className="text-xl font-semibold text-white ml-2">
                             HEAL
@@ -179,9 +182,8 @@ export default function DefaultLayout() {
     const MobileSidebarContent = () => (
         <div className="flex flex-col h-full">
             <div className="flex items-center justify-between p-4 border-b">
-                <h2 className="text-xl font-semibold text-gray-800">
-                    NurseInfo
-                </h2>
+                <FaHandHoldingMedical className="w-8 h-8 text-purple-700" />{" "}
+                <h2 className="text-xl font-semibold text-gray-800">HEAL</h2>
                 <button
                     onClick={() => setShowMobileSidebar(false)}
                     className="p-2 rounded-lg hover:bg-gray-100"

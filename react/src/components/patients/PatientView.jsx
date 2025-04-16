@@ -234,54 +234,66 @@ export default function PatientView() {
     if (!patient) return <div>Patient not found</div>;
 
     return (
-        <div className="p-6">
+        <div className="p-3 sm:p-4 md:p-6">
             <div className="max-w-7xl mx-auto">
                 {/* Header with patient name and buttons */}
-                <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-2xl font-bold">{patient.full_name}</h1>
-                    <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <h1 className="text-xl sm:text-2xl font-bold">
+                        {patient.full_name}
+                    </h1>
+                    <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                         <button
                             onClick={() => generatePDF()}
-                            className="bg-violet-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                            className="bg-violet-500 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
                         >
                             <Download className="w-4 h-4" />
-                            Download PDF
+                            <span className="hidden sm:inline">
+                                Download PDF
+                            </span>
+                            <span className="sm:hidden">PDF</span>
                         </button>
                         <button
                             onClick={() => setShowNewVisitForm(true)}
-                            className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                            className="bg-blue-500 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
                         >
                             <Plus className="w-4 h-4" />
-                            New Visit
+                            <span className="hidden sm:inline">New Visit</span>
+                            <span className="sm:hidden">Visit</span>
                         </button>
                         {!patient.family_id ? (
                             <button
                                 onClick={() => setShowFamilyModal(true)}
-                                className="bg-green-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                                className="bg-green-500 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
                             >
                                 <Users className="w-4 h-4" />
-                                Add to Family
+                                <span className="hidden sm:inline">
+                                    Add to Family
+                                </span>
+                                <span className="sm:hidden">Add Family</span>
                             </button>
                         ) : (
                             <button
                                 onClick={handleRemoveFromFamily}
-                                className="bg-red-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                                className="bg-red-500 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
                             >
                                 <Users className="w-4 h-4" />
-                                Remove from Family
+                                <span className="hidden sm:inline">
+                                    Remove from Family
+                                </span>
+                                <span className="sm:hidden">Remove</span>
                             </button>
                         )}
                     </div>
                 </div>
 
                 {/* Patient Information Sections */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6">
                     {/* Personal Information */}
-                    <div className="bg-white p-6 rounded-lg shadow">
+                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
                         <h2 className="text-lg font-semibold mb-4">
                             Personal Information
                         </h2>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <p className="text-sm text-gray-600">
                                     Date of Birth
@@ -312,7 +324,7 @@ export default function PatientView() {
                                 <p>{patient.blood_type || "Not specified"}</p>
                             </div>
                             {patient.family_id && (
-                                <div className="col-span-2">
+                                <div className="col-span-1 sm:col-span-2">
                                     <p className="text-sm text-gray-600">
                                         Family
                                     </p>
@@ -333,7 +345,7 @@ export default function PatientView() {
                     </div>
 
                     {/* Contact Information */}
-                    <div className="bg-white p-6 rounded-lg shadow">
+                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
                         <h2 className="text-lg font-semibold mb-4">
                             Contact Information
                         </h2>
@@ -350,13 +362,13 @@ export default function PatientView() {
                             </div>
                             <div>
                                 <p className="text-sm text-gray-600">Address</p>
-                                <p>{patient.address}</p>
+                                <p className="break-words">{patient.address}</p>
                             </div>
                         </div>
                     </div>
 
                     {/* Medical History */}
-                    <div className="bg-white p-6 rounded-lg shadow">
+                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
                         <h2 className="text-lg font-semibold mb-4">
                             Medical History
                         </h2>
@@ -388,7 +400,7 @@ export default function PatientView() {
                     </div>
 
                     {/* Lifestyle Information */}
-                    <div className="bg-white p-6 rounded-lg shadow">
+                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
                         <h2 className="text-lg font-semibold mb-4">
                             Lifestyle Information
                         </h2>
@@ -424,16 +436,16 @@ export default function PatientView() {
 
                 {/* Family Members Section - Only show if patient has a family */}
                 {patient.family_id && familyMembers.length > 0 && (
-                    <div className="bg-white p-6 rounded-lg shadow mb-6">
+                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow mb-6">
                         <h2 className="text-lg font-semibold mb-4">
                             Family Members
                         </h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             {familyMembers.map((member) => (
                                 <Link
                                     key={member.id}
                                     to={`/patients/${member.id}`}
-                                    className="block p-4 border rounded-lg hover:bg-gray-50"
+                                    className="block p-4 border rounded-lg hover:bg-gray-50 cursor-pointer"
                                 >
                                     <div className="font-medium">
                                         {member.full_name}
@@ -452,7 +464,7 @@ export default function PatientView() {
                 )}
 
                 {/* Visits History */}
-                <div className="bg-white p-6 rounded-lg shadow">
+                <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
                     <h2 className="text-lg font-semibold mb-4">
                         Visit History
                     </h2>
@@ -460,48 +472,59 @@ export default function PatientView() {
                         <table className="min-w-full">
                             <thead className="bg-gray-50">
                                 <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                         Date
                                     </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                         Vital Signs
                                     </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                         Present Illness
                                     </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                         Diagnosis
                                     </th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200">
-                                {visits.map((visit) => (
-                                    <tr key={visit.id}>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            {format(
-                                                new Date(visit.created_at),
-                                                "MMM d, yyyy"
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div>
-                                                BP: {visit.blood_pressure}
-                                            </div>
-                                            <div>
-                                                HR: {visit.heart_rate} bpm
-                                            </div>
-                                            <div>
-                                                Temp: {visit.temperature}°C
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {visit.present_illness}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {visit.diagnosis}
+                                {visits.length === 0 ? (
+                                    <tr>
+                                        <td
+                                            colSpan="4"
+                                            className="px-3 sm:px-6 py-4 text-center text-gray-500"
+                                        >
+                                            No visits recorded
                                         </td>
                                     </tr>
-                                ))}
+                                ) : (
+                                    visits.map((visit) => (
+                                        <tr key={visit.id}>
+                                            <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                                                {format(
+                                                    new Date(visit.created_at),
+                                                    "MMM d, yyyy"
+                                                )}
+                                            </td>
+                                            <td className="px-3 sm:px-6 py-3 sm:py-4">
+                                                <div>
+                                                    BP: {visit.blood_pressure}
+                                                </div>
+                                                <div>
+                                                    HR: {visit.heart_rate} bpm
+                                                </div>
+                                                <div>
+                                                    Temp: {visit.temperature}°C
+                                                </div>
+                                            </td>
+                                            <td className="px-3 sm:px-6 py-3 sm:py-4">
+                                                {visit.present_illness}
+                                            </td>
+                                            <td className="px-3 sm:px-6 py-3 sm:py-4">
+                                                {visit.diagnosis}
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
                             </tbody>
                         </table>
                     </div>

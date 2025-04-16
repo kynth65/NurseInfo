@@ -47,26 +47,26 @@ export default function PatientTable({
     };
 
     return (
-        <div className="bg-white shadow overflow-hidden rounded-lg">
+        <div className="bg-white shadow overflow-x-auto rounded-lg">
             <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                     <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Name
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Demographics
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="hidden sm:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Contact
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="hidden md:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Family
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="hidden md:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Last Visit
                         </th>
-                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Actions
                         </th>
                     </tr>
@@ -76,7 +76,7 @@ export default function PatientTable({
                         <tr>
                             <td
                                 colSpan="6"
-                                className="px-6 py-4 text-center text-gray-500"
+                                className="px-3 sm:px-6 py-4 text-center text-gray-500"
                             >
                                 No patients found
                             </td>
@@ -87,7 +87,7 @@ export default function PatientTable({
                                 key={patient.id}
                                 className="hover:bg-gray-50 cursor-pointer"
                             >
-                                <td className="px-6 py-4 whitespace-nowrap">
+                                <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                                     <Link
                                         to={`/patients/${patient.id}`}
                                         className="text-blue-600 hover:text-blue-900 font-medium"
@@ -95,7 +95,7 @@ export default function PatientTable({
                                         {patient.full_name}
                                     </Link>
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap">
+                                <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                                     <div className="text-sm text-gray-900">
                                         {calculateAge(patient.date_of_birth)}{" "}
                                         years
@@ -104,7 +104,7 @@ export default function PatientTable({
                                         {patient.gender}
                                     </div>
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap">
+                                <td className="hidden sm:table-cell px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                                     <div className="text-sm text-gray-900">
                                         {patient.contact_number}
                                     </div>
@@ -112,11 +112,11 @@ export default function PatientTable({
                                         {patient.email || "No email"}
                                     </div>
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap">
+                                <td className="hidden md:table-cell px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                                     {patient.family_id ? (
                                         <Link
                                             to={`/families/${patient.family_id}`}
-                                            className="text-blue-600 hover:text-blue-900 flex items-center"
+                                            className="text-blue-600 hover:text-blue-900 flex items-center cursor-pointer"
                                         >
                                             <Users className="w-4 h-4 mr-1" />
                                             {patient.family &&
@@ -130,7 +130,7 @@ export default function PatientTable({
                                         </span>
                                     )}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap">
+                                <td className="hidden md:table-cell px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                                     {patient.visits &&
                                     patient.visits.length > 0 ? (
                                         format(
@@ -147,12 +147,12 @@ export default function PatientTable({
                                         </span>
                                     )}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <Link
                                         to={`/patients/${patient.id}/edit`}
-                                        className="text-yellow-600 hover:text-yellow-900 mr-3"
+                                        className="text-yellow-600 hover:text-yellow-900 mr-2 sm:mr-3 cursor-pointer"
                                     >
-                                        <Edit className="w-5 h-5 inline" />
+                                        <Edit className="w-4 h-4 sm:w-5 sm:h-5 inline" />
                                     </Link>
                                     <button
                                         onClick={(e) => {
@@ -162,9 +162,9 @@ export default function PatientTable({
                                                 patient.full_name
                                             );
                                         }}
-                                        className="text-red-600 hover:text-red-900"
+                                        className="text-red-600 hover:text-red-900 cursor-pointer"
                                     >
-                                        <Trash className="w-5 h-5 inline" />
+                                        <Trash className="w-4 h-4 sm:w-5 sm:h-5 inline" />
                                     </button>
                                 </td>
                             </tr>
