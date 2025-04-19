@@ -174,6 +174,12 @@ export default function DefaultLayout() {
             description: "Manage patient records",
         },
         {
+            path: "/risk-assessment",
+            name: "Risk Assessment",
+            icon: <ClipboardCheck className="w-6 h-6" />,
+            description: "Health risk screening",
+        },
+        {
             path: "/inventory",
             name: "Inventory",
             icon: <Package className="w-6 h-6" />,
@@ -191,23 +197,17 @@ export default function DefaultLayout() {
             icon: <Syringe className="w-6 h-6" />,
             description: "Track vaccination records",
         },
-        {
-            path: "/queue",
-            name: "Queue",
-            icon: <Users className="w-6 h-6" />,
-            description: "Manage patient queue",
-        },
+        // {
+        //     path: "/queue",
+        //     name: "Queue",
+        //     icon: <Users className="w-6 h-6" />,
+        //     description: "Manage patient queue",
+        // },
         {
             path: "/sickness",
             name: "Sickness Tally",
             icon: <Activity className="w-6 h-6" />,
             description: "Track health conditions",
-        },
-        {
-            path: "/risk-assessment",
-            name: "Risk Assessment",
-            icon: <ClipboardCheck className="w-6 h-6" />,
-            description: "Health risk screening",
         },
     ];
 
