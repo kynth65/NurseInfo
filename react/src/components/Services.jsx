@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 
 import Navbar from "./Navbar";
+import Footer from "./Footer";
+
 export default function Services() {
     return (
         <>
@@ -279,6 +281,7 @@ export default function Services() {
                     </div> */}
                 </div>
             </div>
+            <Footer />
         </>
     );
 }

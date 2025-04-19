@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, Moon, Sun, Heart } from "lucide-react";
+import { Menu, X, Moon, Sun } from "lucide-react";
+import { FaHandHoldingMedical } from "react-icons/fa";
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
@@ -24,7 +25,7 @@ export default function Navbar() {
                             to="/"
                             className="flex-shrink-0 flex items-center"
                         >
-                            <Heart className="h-8 w-8 text-purple-600" />
+                            <FaHandHoldingMedical className="h-8 w-8 text-purple-600" />
                             <span className="ml-2 text-xl font-bold text-gray-800">
                                 HEAL
                             </span>

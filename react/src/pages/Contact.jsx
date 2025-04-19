@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import {
     Phone,
     Mail,
     MapPin,
-    Clock,
     Send,
     CheckCircle,
     AlertCircle,
 } from "lucide-react";
+import { FaHandHoldingMedical } from "react-icons/fa";
 
 export default function Contact() {
     const [formData, setFormData] = useState({
@@ -49,7 +50,7 @@ export default function Contact() {
                         Contact Us
                     </h1>
                     <p className="mt-4 max-w-2xl mx-auto text-xl text-purple-100">
-                        Have questions about BHIS? We're here to help.
+                        Have questions about HEAL? We're here to help.
                     </p>
                 </div>
             </div>
@@ -63,8 +64,8 @@ export default function Contact() {
                         </h2>
                         <p className="text-gray-600 mb-8">
                             Our team is ready to answer your questions about
-                            implementing the Barangay Health Information System
-                            in your community.
+                            implementing the Health Enhancement and Access Link
+                            (HEAL) in your barangay health center.
                         </p>
 
                         <div className="space-y-6">
@@ -73,10 +74,7 @@ export default function Contact() {
                                     <Phone className="h-6 w-6 text-purple-600" />
                                 }
                                 title="Phone"
-                                content={[
-                                    "+63 (2) 8123 4567",
-                                    "+63 917 123 4567 (Mobile)",
-                                ]}
+                                content={["+63 (2) 8531 4000"]}
                             />
 
                             <ContactItem
@@ -84,30 +82,31 @@ export default function Contact() {
                                     <Mail className="h-6 w-6 text-purple-600" />
                                 }
                                 title="Email"
-                                content={["info@bhis.ph", "support@bhis.ph"]}
+                                content={["heal@mcu.edu.ph"]}
                             />
 
                             <ContactItem
                                 icon={
                                     <MapPin className="h-6 w-6 text-purple-600" />
                                 }
-                                title="Office Address"
+                                title="Address"
                                 content={[
-                                    "BHIS Innovation Center",
-                                    "123 Health Technology Avenue",
-                                    "Quezon City, Metro Manila, Philippines",
+                                    "Manila Central University",
+                                    "College of Nursing",
+                                    "EDSA, Caloocan City, Philippines",
                                 ]}
                             />
 
                             <ContactItem
                                 icon={
-                                    <Clock className="h-6 w-6 text-purple-600" />
+                                    <FaHandHoldingMedical className="h-6 w-6 text-purple-600" />
                                 }
-                                title="Operating Hours"
+                                title="Team Members"
                                 content={[
-                                    "Monday - Friday: 8:00 AM - 5:00 PM",
-                                    "Saturday: 9:00 AM - 12:00 PM",
-                                    "Closed on Sundays and Holidays",
+                                    "Georgia Marta E. Diaz (Team Leader)",
+                                    "Thea Kim M. Castuciano, Irish Hazel N. Cruz",
+                                    "Sean Thomas M. Cubarde, Joshua N. Dela Cruz",
+                                    "Troy Gideon C. Dela Cruz, John Amos Delantar",
                                 ]}
                             />
                         </div>
@@ -287,17 +286,7 @@ export default function Contact() {
                 </div>
             </div>
 
-            {/* Map Section */}
-            <div className="w-full h-96 bg-gray-200 mt-16">
-                <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                    <div className="text-center">
-                        <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                        <p className="text-gray-500">
-                            Interactive map would be displayed here
-                        </p>
-                    </div>
-                </div>
-            </div>
+            <Footer />
         </div>
     );
 }

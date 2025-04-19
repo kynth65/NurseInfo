@@ -1,7 +1,7 @@
 import React from "react";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import {
-    Heart,
     Users,
     Target,
     Clock,
@@ -12,7 +12,9 @@ import {
     Database,
     Shield,
     Activity,
+    Heart,
 } from "lucide-react";
+import { FaHandHoldingMedical } from "react-icons/fa";
 
 export default function About() {
     return (
@@ -85,7 +87,7 @@ export default function About() {
             <div className="bg-white py-16">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
-                        <Heart className="h-12 w-12 text-purple-600 mx-auto mb-4" />
+                        <FaHandHoldingMedical className="h-12 w-12 text-purple-600 mx-auto mb-4" />
                         <h2 className="text-3xl font-bold text-gray-900">
                             Our Core Values
                         </h2>
@@ -128,7 +130,9 @@ export default function About() {
                             description="We streamline processes to reduce administrative workload, allowing health workers to focus more on patient care than paperwork."
                         />
                         <CoreValueCard
-                            icon={<Heart className="h-8 w-8 text-purple-600" />}
+                            icon={
+                                <FaHandHoldingMedical className="h-8 w-8 text-purple-600" />
+                            }
                             title="Compassion"
                             description="We never forget that behind every data point is a real person whose health and wellbeing matter."
                         />
@@ -298,26 +302,7 @@ export default function About() {
                 </div>
             </div>
 
-            {/* CTA Section */}
-            <div className="bg-gradient-to-r from-purple-600 to-indigo-600 py-12">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h2 className="text-3xl font-bold text-white">
-                        Ready to transform healthcare in your barangay?
-                    </h2>
-                    <p className="mt-4 text-xl text-purple-100 max-w-3xl mx-auto">
-                        Join the initiative to modernize barangay health systems
-                        across the Philippines
-                    </p>
-                    <div className="mt-8">
-                        <a
-                            href="#"
-                            className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-purple-700 bg-white hover:bg-purple-50 shadow-md transition duration-150 ease-in-out"
-                        >
-                            Contact Us
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <Footer />
         </div>
     );
 }

@@ -2,6 +2,7 @@ import React from "react";
 
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
+import Footer from "../components/Footer";
 
 export default function Homepage() {
     return (
@@ -9,6 +10,7 @@ export default function Homepage() {
             <div>
                 <Navbar />
                 <Hero />
+                <Footer />
             </div>
         </>
     );
