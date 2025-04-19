@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Edit, Trash, Users } from "lucide-react";
 
 export default function PatientTable({
@@ -8,6 +8,8 @@ export default function PatientTable({
     onRefresh,
     onDelete,
 }) {
+    const navigate = useNavigate();
+
     // Filter patients based on search term
     const filteredPatients = patients.filter((patient) => {
         const searchLower = searchTerm.toLowerCase();
@@ -40,10 +42,22 @@ export default function PatientTable({
     };
 
     // Confirm deletion
-    const confirmDelete = (id, name) => {
+    const confirmDelete = (e, id, name) => {
+        e.stopPropagation(); // Stop event from bubbling up to the row click
         if (window.confirm(`Are you sure you want to delete ${name}?`)) {
             onDelete(id);
         }
+    };
+
+    // Navigate to patient details
+    const handleRowClick = (patientId) => {
+        navigate(`/patients/${patientId}`);
+    };
+
+    // Handle family link click
+    const handleFamilyClick = (e, familyId) => {
+        e.stopPropagation(); // Prevent row click event
+        navigate(`/families/${familyId}`);
     };
 
     return (
@@ -85,15 +99,13 @@ export default function PatientTable({
                         filteredPatients.map((patient) => (
                             <tr
                                 key={patient.id}
-                                className="hover:bg-gray-50 cursor-pointer"
+                                onClick={() => handleRowClick(patient.id)}
+                                className="hover:bg-gray-50 cursor-pointer transition-colors duration-150"
                             >
                                 <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
-                                    <Link
-                                        to={`/patients/${patient.id}`}
-                                        className="text-blue-600 hover:text-blue-900 font-medium"
-                                    >
+                                    <span className="text-blue-600 font-medium">
                                         {patient.full_name}
-                                    </Link>
+                                    </span>
                                 </td>
                                 <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                                     <div className="text-sm text-gray-900">
@@ -114,8 +126,13 @@ export default function PatientTable({
                                 </td>
                                 <td className="hidden md:table-cell px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                                     {patient.family_id ? (
-                                        <Link
-                                            to={`/families/${patient.family_id}`}
+                                        <button
+                                            onClick={(e) =>
+                                                handleFamilyClick(
+                                                    e,
+                                                    patient.family_id
+                                                )
+                                            }
                                             className="text-blue-600 hover:text-blue-900 flex items-center cursor-pointer"
                                         >
                                             <Users className="w-4 h-4 mr-1" />
@@ -123,7 +140,7 @@ export default function PatientTable({
                                             patient.family.family_number
                                                 ? patient.family.family_number
                                                 : `Family #${patient.family_id}`}
-                                        </Link>
+                                        </button>
                                     ) : (
                                         <span className="text-gray-500">
                                             No family
@@ -148,16 +165,21 @@ export default function PatientTable({
                                     )}
                                 </td>
                                 <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <Link
-                                        to={`/patients/${patient.id}/edit`}
-                                        className="text-yellow-600 hover:text-yellow-900 mr-2 sm:mr-3 cursor-pointer"
-                                    >
-                                        <Edit className="w-4 h-4 sm:w-5 sm:h-5 inline" />
-                                    </Link>
                                     <button
                                         onClick={(e) => {
                                             e.stopPropagation();
+                                            navigate(
+                                                `/patients/${patient.id}/edit`
+                                            );
+                                        }}
+                                        className="text-yellow-600 hover:text-yellow-900 mr-2 sm:mr-3 cursor-pointer"
+                                    >
+                                        <Edit className="w-4 h-4 sm:w-5 sm:h-5 inline" />
+                                    </button>
+                                    <button
+                                        onClick={(e) => {
                                             confirmDelete(
+                                                e,
                                                 patient.id,
                                                 patient.full_name
                                             );

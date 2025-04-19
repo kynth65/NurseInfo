@@ -1,13 +1,13 @@
 import React from "react";
 import {
     FileText,
-    Stethoscope,
-    Package,
     Activity,
-    Calendar,
-    Users,
+    Clock,
+    Link,
+    BarChart2,
     Shield,
     Check,
+    Zap,
 } from "lucide-react";
 
 import Navbar from "./Navbar";
@@ -19,11 +19,19 @@ export default function Services() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center">
                         <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-                            Barangay Health Information System
+                            HEAL - Health Enhancement and Access Link
                         </h2>
                         <p className="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
-                            Improve patient records, streamline services, and
-                            enhance public health monitoring
+                            A Health Information System for Smarter Healthcare
+                        </p>
+                    </div>
+
+                    <div className="mt-6">
+                        <p className="text-lg text-gray-600 text-center max-w-4xl mx-auto">
+                            Transforming barangay health centers with a modern,
+                            efficient platform that addresses the local
+                            challenges of record keeping and healthcare delivery
+                            in the Philippines.
                         </p>
                     </div>
 
@@ -34,74 +42,76 @@ export default function Services() {
                                 icon={
                                     <FileText className="h-8 w-8 text-purple-600" />
                                 }
-                                title="Patient Records Management"
+                                title="Digital Patient Records"
                                 features={[
-                                    "Digital patient profiles (name, age, address, medical history)",
-                                    "Immunization tracking (vaccination schedules and records)",
-                                    "Maternal and child health monitoring",
+                                    "Secure storage of medical histories and records",
+                                    "Consultations and treatment plans",
+                                    "Immunization records tracking",
                                 ]}
                             />
 
                             {/* Service 2 */}
                             <ServiceCard
                                 icon={
-                                    <Stethoscope className="h-8 w-8 text-purple-600" />
+                                    <Zap className="h-8 w-8 text-purple-600" />
                                 }
-                                title="Consultation & Treatment Logs"
+                                title="Quick and Easy Access"
                                 features={[
-                                    "Records for common barangay health services",
-                                    "Doctor/nurse notes for each visit",
-                                    "Referral system for serious cases (hospital transfers)",
+                                    "Instant retrieval of patient information",
+                                    "Reduced waiting times for patients",
+                                    "Improved service delivery efficiency",
                                 ]}
                             />
 
                             {/* Service 3 */}
                             <ServiceCard
                                 icon={
-                                    <Package className="h-8 w-8 text-purple-600" />
+                                    <Activity className="h-8 w-8 text-purple-600" />
                                 }
-                                title="Medicine & Supply Inventory"
+                                title="Automated Disease Tracking"
                                 features={[
-                                    "Stock levels of essential medicines",
-                                    "Automated alerts for low-stock supplies",
-                                    "Dispensing records to track medicine distribution",
+                                    "Real-time disease tracking and categorization",
+                                    "Early outbreak detection capabilities",
+                                    "Implementation of preventive measures",
                                 ]}
                             />
 
                             {/* Service 4 */}
                             <ServiceCard
                                 icon={
-                                    <Activity className="h-8 w-8 text-purple-600" />
+                                    <Link className="h-8 w-8 text-purple-600" />
                                 }
-                                title="Disease Surveillance & Reporting"
+                                title="DOH Integration"
                                 features={[
-                                    "Logs for common illnesses (dengue, tuberculosis, measles)",
-                                    "Automatic reports for the Department of Health (DOH)",
-                                    "Early warning system for outbreaks",
+                                    "Seamless transfer of health data to DOH",
+                                    "Support for better disease surveillance",
+                                    "Enhanced national health reporting",
                                 ]}
                             />
 
                             {/* Service 5 */}
                             <ServiceCard
                                 icon={
-                                    <Calendar className="h-8 w-8 text-purple-600" />
+                                    <BarChart2 className="h-8 w-8 text-purple-600" />
                                 }
-                                title="Scheduling & Appointments"
+                                title="Health Data Analytics"
                                 features={[
-                                    "Online appointment booking for consultations",
-                                    "Reminders via SMS or mobile notifications",
+                                    "Monitor community health trends",
+                                    "Identify common illnesses",
+                                    "Support data-driven decision making",
                                 ]}
                             />
 
                             {/* Service 6 */}
                             <ServiceCard
                                 icon={
-                                    <Users className="h-8 w-8 text-purple-600" />
+                                    <Clock className="h-8 w-8 text-purple-600" />
                                 }
-                                title="Health Programs Management"
+                                title="Scalable Solution"
                                 features={[
-                                    "Monitoring for nutrition, family planning, deworming, TB-DOTS, etc.",
-                                    "Attendance tracking for barangay health seminars",
+                                    "Adapts and expands as community grows",
+                                    "Ensures sustained efficiency over time",
+                                    "Supports increasing healthcare demands",
                                 ]}
                             />
                         </div>
@@ -137,10 +147,10 @@ export default function Services() {
                         </div>
                     </div>
 
-                    {/* Development Approach */}
+                    {/* Benefits */}
                     <div className="mt-16">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-8">
-                            Development Approach
+                        <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">
+                            Key Benefits
                         </h2>
                         <div className="bg-gray-50 rounded-lg overflow-hidden shadow-sm">
                             <div className="px-6 py-8 sm:p-10 space-y-6">
@@ -158,19 +168,20 @@ export default function Services() {
                                                 <path
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
-                                                    d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"
+                                                    d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5"
                                                 />
                                             </svg>
                                         </div>
                                     </div>
                                     <div className="ml-4">
                                         <h4 className="text-lg font-medium text-gray-900">
-                                            Technology Stack
+                                            Streamlined Local Processes
                                         </h4>
                                         <p className="mt-2 text-gray-600">
-                                            Web-based or mobile app using PHP,
-                                            Laravel, Python, or Firebase for a
-                                            lightweight cloud solution
+                                            Automating data entry and retrieval
+                                            tailored to the Philippine barangay
+                                            context, reducing manual processes
+                                            and paperwork
                                         </p>
                                     </div>
                                 </div>
@@ -189,18 +200,20 @@ export default function Services() {
                                                 <path
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
-                                                    d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"
+                                                    d="M15.75 15.75l-2.489-2.489m0 0a3.375 3.375 0 10-4.773-4.773 3.375 3.375 0 004.774 4.774zM21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                                                 />
                                             </svg>
                                         </div>
                                     </div>
                                     <div className="ml-4">
                                         <h4 className="text-lg font-medium text-gray-900">
-                                            Data Storage
+                                            Enhanced Accuracy and Responsiveness
                                         </h4>
                                         <p className="mt-2 text-gray-600">
-                                            Secure database (MySQL, PostgreSQL)
-                                            with backup options
+                                            Providing reliable, real-time access
+                                            to patient records for effective
+                                            community health management and
+                                            emergency response
                                         </p>
                                     </div>
                                 </div>
@@ -226,11 +239,12 @@ export default function Services() {
                                     </div>
                                     <div className="ml-4">
                                         <h4 className="text-lg font-medium text-gray-900">
-                                            User Interface
+                                            Empowered Health Workers
                                         </h4>
                                         <p className="mt-2 text-gray-600">
-                                            Simple and user-friendly for
-                                            barangay health workers
+                                            Enabling community health workers to
+                                            focus more on patient care by
+                                            reducing administrative workload
                                         </p>
                                     </div>
                                 </div>
@@ -238,16 +252,17 @@ export default function Services() {
                         </div>
                     </div>
 
-                    {/* CTA Section */}
+                    {/* CTA Section
                     <div className="mt-16">
                         <div className="bg-purple-700 rounded-lg shadow-xl overflow-hidden">
                             <div className="px-6 py-12 sm:px-12 lg:py-16 lg:px-16 md:flex md:items-center md:justify-between">
                                 <div>
                                     <h2 className="text-2xl font-extrabold text-white tracking-tight sm:text-3xl">
-                                        Ready to improve healthcare delivery?
+                                        Ready to transform healthcare in your
+                                        barangay?
                                     </h2>
                                     <p className="mt-3 max-w-3xl text-lg leading-6 text-purple-100">
-                                        Implement BHIS in your barangay health
+                                        Implement HEAL in your barangay health
                                         center today.
                                     </p>
                                 </div>
@@ -261,7 +276,7 @@ export default function Services() {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </>
