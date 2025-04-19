@@ -27,6 +27,8 @@ import FamilyList from "./components/families/FamilyList";
 import { FamilyView } from "./components/families/FamilyView";
 import FamilyForm from "./components/families/FamilyForm";
 
+import RiskAssessment from "./components/risk_assessment/RiskAssesment";
+
 const router = createBrowserRouter([
     {
         path: "/",
@@ -131,6 +133,10 @@ const router = createBrowserRouter([
             {
                 path: "/vaccination",
                 element: <VaccinationDashboard />,
+            },
+            {
+                path: "/risk-assessment",
+                element: <RiskAssessment />,
             },
         ],
     },

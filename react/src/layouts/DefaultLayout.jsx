@@ -13,6 +13,7 @@ import {
     UserPlus,
     Home,
     User,
+    ClipboardCheck,
     Menu as MenuIcon,
     X,
     Heart, // Importing an icon for the title
@@ -101,6 +102,12 @@ export default function DefaultLayout() {
             name: "Sickness Tally",
             icon: <Activity className="w-6 h-6" />,
             description: "Track health conditions",
+        },
+        {
+            path: "/risk-assessment",
+            name: "Risk Assessment",
+            icon: <ClipboardCheck className="w-6 h-6" />,
+            description: "Health risk screening",
         },
     ];
 

@@ -219,28 +219,6 @@ export default function About() {
                 </div>
             </div>
 
-            {/* Impact Stats */}
-            <div className="bg-purple-50 py-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h2 className="text-3xl font-bold text-gray-900 text-center mb-16">
-                        Expected Impact
-                    </h2>
-
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                        <StatCard number="85%" label="Reduction in Paperwork" />
-                        <StatCard
-                            number="50%"
-                            label="Faster Patient Processing"
-                        />
-                        <StatCard
-                            number="90%"
-                            label="Improved Record Accuracy"
-                        />
-                        <StatCard number="100%" label="DOH Compliance" />
-                    </div>
-                </div>
-            </div>
-
             {/* Team Section */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                 <div className="text-center mb-16">
