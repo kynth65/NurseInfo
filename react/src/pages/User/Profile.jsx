@@ -1,7 +1,6 @@
 import React from "react";
 import { useStateContext } from "../../context/ContextProvider";
 import { useNavigate } from "react-router-dom";
-import axiosClient from "../../axios-client.js";
 import {
     User,
     Phone,
@@ -13,88 +12,87 @@ import {
     BookOpen,
     Users,
     Calendar,
-    Edit,
     Shield,
     Briefcase,
-    LogOut,
 } from "lucide-react";
 
 export default function Profile() {
-    const { user, setUser, setToken } = useStateContext();
+    const { user } = useStateContext();
     const navigate = useNavigate();
 
-    const handleLogout = () => {
-        axiosClient
-            .post("/logout")
-            .then(() => {
-                setUser(null);
-                setToken(null);
-                navigate("/");
-            })
-            .catch((err) => {
-                console.error("Logout error:", err);
-                // Force logout even if API fails
-                setUser(null);
-                setToken(null);
-                navigate("/");
-            });
-    };
-
-    // Use context data directly instead of API calls
+    // Use data from the PDF
     const profileData = {
-        // Use user data from context
+        // Basic info
         id: user?.id || 1,
-        name: user?.name || "Kynth Marcaida",
-        email: user?.email || "kynth65@gmail.com",
-        joined_date: "February 15, 2023",
+        name: "Georgia Marta E. Diaz",
+        email: "georgia.diaz@mcu.edu.ph",
+        joined_date: "January 15, 2024",
 
-        // Fictional data
-        position: "Senior Barangay Health Worker",
+        // Work information
+        position: "Project Leader",
         contact_number: "+63 919 876 5432",
-        address: "123 Sampaguita St., Barangay Health Center",
-        department: "Primary Healthcare",
-        shift: "Weekdays (7AM - 4PM)",
-        role: "Healthcare Coordinator",
+        address: "Manila Central University, College of Nursing",
+        department: "Nursing Informatics",
+        shift: "SY 2024-2025, 2nd Semester",
+        role: "HEAL Project Leader",
+
+        // Certifications aligned with nursing background
         certifications: [
-            "DOH Community Health Worker Certification",
+            "Registered Nurse License",
             "Basic Life Support & First Aid",
-            "COVID-19 Vaccination Administration",
-            "Maternal & Child Health Monitoring",
+            "Healthcare Information Systems Management",
+            "Data Privacy in Healthcare",
         ],
+
         education: {
             degree: "Bachelor of Science in Nursing",
-            school: "University of Santo Tomas",
-            year: "2018",
+            school: "Manila Central University",
+            year: "2021",
         },
+
         emergency_contact: {
-            name: "Maria Santos",
-            relationship: "Sister",
+            name: "Juan Dela Cruz",
+            relationship: "Guardian",
             contact: "+63 917 123 4567",
         },
-        bio: "Dedicated healthcare professional with 5+ years of experience serving in barangay health initiatives. Specializing in preventive care, community outreach, and health education programs.",
+
+        bio: "Project Leader for HEAL (Health Enhancement and Access Link), a health information system designed to streamline processes in barangay health centers across the Philippines. Focused on transforming traditional health information systems into modern, efficient platforms that address local challenges of record keeping and healthcare delivery.",
+
         statistics: {
-            patients_served: 1876,
-            vaccination_campaigns: 23,
+            patients_served: 1200,
+            vaccination_campaigns: 18,
             training_hours: 245,
-            community_programs: 12,
+            community_programs: 8,
         },
+
         skills: [
-            "Patient Assessment",
-            "Immunization",
-            "Health Education",
-            "Maternal Care",
-            "Vital Signs Monitoring",
-            "Community Outreach",
+            "Health Information Systems",
+            "Project Management",
+            "Clinical Data Analytics",
+            "Patient Records Management",
+            "Healthcare Workflow Design",
+            "Training & Development",
         ],
+
         areas_of_focus: [
-            "Maternal and Child Health",
-            "Immunization Programs",
-            "Elderly Care",
-            "Chronic Disease Management",
+            "Barangay Health Information Systems",
+            "Healthcare Data Management",
+            "Clinical Process Improvement",
+            "Health Worker Support Systems",
         ],
+
         languages: ["English", "Filipino", "Cebuano"],
-        profile_photo: `https://randomuser.me/api/portraits/men/45.jpg`,
     };
+
+    // Generate initials for avatar
+    const getInitials = (name) => {
+        const nameParts = name.split(" ");
+        return nameParts.length > 1
+            ? `${nameParts[0][0]}${nameParts[1][0]}`
+            : nameParts[0].substring(0, 2);
+    };
+
+    const initials = getInitials(profileData.name);
 
     return (
         <div className="bg-gray-50 min-h-screen p-4 md:p-6">
@@ -103,18 +101,8 @@ export default function Profile() {
                 <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
                     <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-6">
                         <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0">
-                            <div className="relative">
-                                <img
-                                    src={profileData.profile_photo}
-                                    alt={profileData.name}
-                                    className="w-24 h-24 rounded-full border-4 border-white object-cover shadow-md"
-                                />
-                                <div className="absolute bottom-0 right-0 bg-white rounded-full p-1 shadow-md cursor-pointer hover:bg-gray-100">
-                                    <Edit
-                                        size={14}
-                                        className="text-purple-600"
-                                    />
-                                </div>
+                            <div className="relative flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-purple-400 to-purple-700 text-white text-2xl font-bold border-4 border-white shadow-md">
+                                {initials}
                             </div>
                             <div className="md:ml-6 text-center md:text-left">
                                 <h1 className="text-2xl font-bold text-white">
@@ -126,21 +114,10 @@ export default function Profile() {
                                 <div className="flex items-center justify-center md:justify-start mt-2 text-purple-200 text-sm">
                                     <Shield size={14} className="mr-1" />
                                     <span>
-                                        BHW-{("000" + profileData.id).slice(-4)}
+                                        HEAL-
+                                        {("000" + profileData.id).slice(-4)}
                                     </span>
                                 </div>
-                            </div>
-                            <div className="md:ml-auto flex space-x-3">
-                                <button className="bg-white text-purple-700 px-4 py-2 rounded-md font-medium shadow-sm hover:bg-purple-50 transition">
-                                    Edit Profile
-                                </button>
-                                <button
-                                    onClick={handleLogout}
-                                    className="bg-red-500 text-white px-4 py-2 cursor-pointer rounded-md font-medium shadow-sm hover:bg-red-600 transition flex items-center"
-                                >
-                                    <LogOut size={16} className="mr-2" />
-                                    Logout
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -351,7 +328,7 @@ export default function Profile() {
                                 </div>
                                 <div>
                                     <p className="text-sm text-gray-500">
-                                        Work Schedule
+                                        Schedule
                                     </p>
                                     <p className="text-gray-800 font-medium">
                                         {profileData.shift}
@@ -361,7 +338,7 @@ export default function Profile() {
 
                             <div className="mt-6 pt-6 border-t border-gray-100">
                                 <h3 className="font-medium text-gray-700 mb-3">
-                                    Status
+                                    Project Status
                                 </h3>
                                 <div className="flex items-center">
                                     <div className="h-4 w-4 rounded-full bg-green-500 mr-2"></div>
@@ -372,7 +349,7 @@ export default function Profile() {
                                         •
                                     </span>
                                     <span className="text-gray-500">
-                                        Last active: Today, 10:45 AM
+                                        Current Phase: Development
                                     </span>
                                 </div>
                             </div>
@@ -414,29 +391,9 @@ export default function Profile() {
                                                 className="flex items-start"
                                             >
                                                 <Award className="w-4 h-4 text-purple-500 mt-1 mr-2 flex-shrink-0" />
-                                                <div>
-                                                    <p className="text-gray-800">
-                                                        {cert}
-                                                    </p>
-                                                    <p className="text-gray-500 text-sm">
-                                                        {new Date(
-                                                            Date.now() -
-                                                                Math.random() *
-                                                                    3 *
-                                                                    365 *
-                                                                    24 *
-                                                                    60 *
-                                                                    60 *
-                                                                    1000
-                                                        ).toLocaleDateString(
-                                                            "en-US",
-                                                            {
-                                                                year: "numeric",
-                                                                month: "short",
-                                                            }
-                                                        )}
-                                                    </p>
-                                                </div>
+                                                <p className="text-gray-800">
+                                                    {cert}
+                                                </p>
                                             </div>
                                         )
                                     )}
