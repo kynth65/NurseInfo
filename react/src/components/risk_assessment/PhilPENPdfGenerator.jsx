@@ -178,6 +178,21 @@ const PhilPENPdfGenerator = ({ formData, onBack }) => {
     `;
         printArea.appendChild(overrideStyles);
 
+        const medicalHistorySection = printArea.querySelector(
+            ".past-medical-history-section"
+        );
+        if (medicalHistorySection) {
+            medicalHistorySection.style.marginTop = "40px";
+            medicalHistorySection.style.paddingTop = "90px";
+        }
+
+        const riskScreeningSection = printArea.querySelector(
+            ".risk-screening-section"
+        );
+        if (riskScreeningSection) {
+            riskScreeningSection.style.marginTop = "40px";
+            riskScreeningSection.style.paddingTop = "110px";
+        }
         // Create configuration for jsPDF
         const opt = {
             margin: [10, 10, 10, 10],
@@ -246,6 +261,34 @@ const PhilPENPdfGenerator = ({ formData, onBack }) => {
         );
         if (selectedItems.length === 0) return "None";
         return selectedItems.join(", ");
+    };
+
+    const addPageBreakClasses = (element) => {
+        // Get all section headers
+        const sections = element.querySelectorAll(".philpen-section-title");
+
+        // Start from the third section (index 2) and add page-break class
+        // This will ensure sections like PAST MEDICAL HISTORY start on a new page
+        if (sections.length > 2) {
+            for (let i = 2; i < sections.length; i++) {
+                // Add a spacer div before the section to force a page break
+                const spacer = document.createElement("div");
+                spacer.className = "page-break-before";
+                spacer.style.pageBreakBefore = "always";
+                spacer.style.marginTop = "40px";
+                spacer.style.height = "1px"; // Minimal height, just to create space
+
+                // Insert the spacer before the section container
+                const sectionContainer =
+                    sections[i].closest(".philpen-section");
+                if (sectionContainer && sectionContainer.parentNode) {
+                    sectionContainer.parentNode.insertBefore(
+                        spacer,
+                        sectionContainer
+                    );
+                }
+            }
+        }
     };
 
     return (
@@ -575,7 +618,7 @@ const PhilPENPdfGenerator = ({ formData, onBack }) => {
                     </div>
 
                     {/* III. PAST MEDICAL HISTORY */}
-                    <div className="mb-6 philpen-section">
+                    <div className="mb-6 philpen-section past-medical-history-section">
                         <h3 className="philpen-section-title font-medium mb-2 bg-purple-600 text-white p-2">
                             III. PAST MEDICAL HISTORY
                         </h3>
@@ -893,7 +936,7 @@ const PhilPENPdfGenerator = ({ formData, onBack }) => {
                     </div>
 
                     {/* VI. RISK SCREENING */}
-                    <div className="mb-6 philpen-section">
+                    <div className="mb-6 philpen-section risk-screening-section">
                         <h3 className="philpen-section-title font-medium mb-2 bg-purple-600 text-white p-2">
                             VI. RISK SCREENING
                         </h3>

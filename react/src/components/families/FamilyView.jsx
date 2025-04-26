@@ -55,12 +55,12 @@ export function FamilyView() {
             <div className="max-w-7xl mx-auto">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 mb-6">
                     <div>
-                        <h1 className="text-xl sm:text-2xl font-bold">
-                            Family: {family.family_number}
+                        <h1 className="text-xl sm:text-2xl uppercase font-bold">
+                            Family: {family.family_name}
                         </h1>
                         {family.family_name && (
                             <p className="text-gray-600">
-                                {family.family_name}
+                                {family.family_number}
                             </p>
                         )}
                     </div>

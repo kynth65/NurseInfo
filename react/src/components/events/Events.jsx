@@ -8,14 +8,11 @@ const Events = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [showAddForm, setShowAddForm] = useState(false);
-    const [imagePreview, setImagePreview] = useState(null);
     const [newEvent, setNewEvent] = useState({
         title: "",
         description: "",
         date: "",
         location: "",
-        image: null,
     });
 
     useEffect(() => {
@@ -61,16 +58,6 @@ const Events = () => {
         }
     };
 
-    const handleImageUpload = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setNewEvent((prev) => ({ ...prev, image: file }));
-            // Create preview URL
-            const preview = URL.createObjectURL(file);
-            setImagePreview(preview);
-        }
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -92,13 +79,8 @@ const Events = () => {
                 description: "",
                 date: "",
                 location: "",
-                image: null,
             });
-            // Clean up the preview URL
-            if (imagePreview) {
-                URL.revokeObjectURL(imagePreview);
-                setImagePreview(null);
-            }
+
             setShowModal(false);
             fetchEvents();
         } catch (error) {
@@ -132,19 +114,6 @@ const Events = () => {
                 <Trash2 size={16} />
             </button>
 
-            {event.image && (
-                <div className="h-48 overflow-hidden">
-                    <img
-                        src={event.image}
-                        alt={event.title}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                            console.error("Image failed to load:", event.image);
-                            e.target.style.display = "none";
-                        }}
-                    />
-                </div>
-            )}
             <div className="p-4">
                 <h3 className="text-lg font-semibold mb-2">{event.title}</h3>
                 <p className="mb-4">{event.description}</p>
@@ -286,6 +255,9 @@ const Events = () => {
                                     <input
                                         type="datetime-local"
                                         required
+                                        min={new Date()
+                                            .toISOString()
+                                            .slice(0, 16)}
                                         value={newEvent.date}
                                         onChange={(e) =>
                                             setNewEvent((prev) => ({
@@ -314,26 +286,6 @@ const Events = () => {
                                         placeholder="Enter event location"
                                     />
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Image (Optional)
-                                    </label>
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleImageUpload}
-                                        className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                    />
-                                    {imagePreview && (
-                                        <div className="mt-2 relative w-48 h-32 rounded-lg overflow-hidden">
-                                            <img
-                                                src={imagePreview}
-                                                alt="Preview"
-                                                className="w-full h-full object-cover"
-                                            />
-                                        </div>
-                                    )}
-                                </div>
                                 <div className="flex gap-4 justify-center">
                                     <button
                                         type="submit"
@@ -350,14 +302,7 @@ const Events = () => {
                                                 description: "",
                                                 date: "",
                                                 location: "",
-                                                image: null,
                                             });
-                                            if (imagePreview) {
-                                                URL.revokeObjectURL(
-                                                    imagePreview
-                                                );
-                                                setImagePreview(null);
-                                            }
                                         }}
                                         className="px-6 py-2 border border-gray-300 text-gray-700 cursor-pointer rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                                     >

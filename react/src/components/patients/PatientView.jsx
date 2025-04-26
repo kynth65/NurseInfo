@@ -238,7 +238,7 @@ export default function PatientView() {
             <div className="max-w-7xl mx-auto">
                 {/* Header with patient name and buttons */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                    <h1 className="text-xl sm:text-2xl font-bold">
+                    <h1 className="text-xl uppercase sm:text-2xl font-bold">
                         {patient.full_name}
                     </h1>
                     <div className="flex flex-wrap gap-2 w-full sm:w-auto">
