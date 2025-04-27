@@ -132,16 +132,16 @@ export default function MedicineList() {
                         <div className="flex gap-2">
                             <Link
                                 to="/inventory/history"
-                                className="bg-gray-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                                className="bg-purple-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
                             >
                                 History
                             </Link>
                             <button
                                 onClick={() => setShowAddForm(true)}
-                                className="bg-blue-500 text-white cursor-pointer px-4 py-2 rounded-lg flex items-center gap-2"
+                                className="bg-purple-600 text-white cursor-pointer px-4 py-2 rounded-lg flex items-center gap-2"
                             >
                                 <Plus className="w-4 h-4" />
-                                Add Medicine
+                                Add
                             </button>
                         </div>
                     </div>
@@ -186,8 +186,15 @@ export default function MedicineList() {
 
                 {/* Add Medicine Form */}
                 {showAddForm && (
-                    <div className="fixed inset-0 bg-neutral-100 bg-opacity-50 flex items-center justify-center">
-                        <div className="bg-white p-6 rounded-lg w-96">
+                    <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+                        {/* Blurry transparent backdrop */}
+                        <div
+                            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                            onClick={() => setShowAddForm(false)}
+                        ></div>
+
+                        {/* Modal content */}
+                        <div className="bg-white p-6 rounded-lg w-96 relative z-10">
                             <h2 className="text-xl font-bold mb-4">
                                 Add New Medicine
                             </h2>
@@ -254,7 +261,7 @@ export default function MedicineList() {
                                     </button>
                                     <button
                                         type="submit"
-                                        className="px-4 py-2 bg-blue-500 text-white rounded cursor-pointer"
+                                        className="px-4 py-2 bg-purple-600 text-white rounded cursor-pointer"
                                     >
                                         Add
                                     </button>
@@ -370,8 +377,15 @@ export default function MedicineList() {
 
                 {/* Transaction Form */}
                 {showTransactionForm && (
-                    <div className="fixed inset-0 bg- bg-opacity-50 flex items-center justify-center">
-                        <div className="bg-white p-6 rounded-lg w-96">
+                    <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+                        {/* Blurry transparent backdrop */}
+                        <div
+                            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                            onClick={() => setShowTransactionForm(null)}
+                        ></div>
+
+                        {/* Modal content */}
+                        <div className="bg-white p-6 rounded-lg w-96 relative z-10">
                             <h2 className="text-xl font-bold mb-4">
                                 {transaction.type === "in" ? "Add" : "Take"}{" "}
                                 Stock
@@ -425,7 +439,7 @@ export default function MedicineList() {
                                     </button>
                                     <button
                                         type="submit"
-                                        className="px-4 py-2 bg-blue-500 text-white rounded cursor-pointer"
+                                        className="px-4 py-2 bg-purple-600 text-white rounded cursor-pointer"
                                     >
                                         Submit
                                     </button>

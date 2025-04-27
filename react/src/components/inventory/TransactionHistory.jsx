@@ -1,7 +1,7 @@
 // src/components/inventory/TransactionHistory.jsx
 import React, { useState, useEffect } from "react";
 import axiosClient from "../../axios-client";
-import { ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, X } from "lucide-react";
 import Loading from "../Loading";
 
 export default function TransactionHistory({ medicineId, onClose }) {
@@ -30,70 +30,73 @@ export default function TransactionHistory({ medicineId, onClose }) {
     if (error) return <div className="text-red-500">{error}</div>;
 
     return (
-        <div className="fixed inset-0 bg-neutral-100 bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-6 rounded-lg w-full max-w-2xl max-h-[80vh] overflow-y-auto">
-                <div className="flex justify-between items-center mb-4">
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+            {/* Blurry transparent backdrop */}
+            <div
+                className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                onClick={onClose}
+            ></div>
+
+            {/* Modal content */}
+            <div className="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[85vh] overflow-hidden relative z-10 flex flex-col">
+                <div className="flex justify-between items-center px-6 py-4 border-b">
                     <h2 className="text-xl font-bold">Transaction History</h2>
                     <button
                         onClick={onClose}
-                        className="w-8 h-8 rounded-full cursor-pointer flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all duration-200"
-                        title="Close"
+                        className="text-gray-400 hover:text-gray-600"
                     >
-                        <svg
-                            className="w-5 h-5"
-                            fill="none"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
+                        <X className="w-5 h-5" />
                     </button>
                 </div>
 
-                <div className="space-y-3">
-                    {transactions.map((transaction) => (
-                        <div
-                            key={transaction.id}
-                            className="border rounded-lg p-4 flex items-start gap-3"
-                        >
-                            {transaction.type === "in" ? (
-                                <ArrowUpRight className="w-5 h-5 text-green-500 mt-1" />
-                            ) : (
-                                <ArrowDownRight className="w-5 h-5 text-red-500 mt-1" />
-                            )}
-                            <div className="flex-1">
-                                <div className="flex justify-between items-start">
-                                    <span className="font-medium">
-                                        {transaction.type === "in"
-                                            ? "Added"
-                                            : "Removed"}{" "}
-                                        {transaction.quantity} units
-                                    </span>
-                                    <span className="text-sm text-gray-500">
-                                        {new Date(
-                                            transaction.created_at
-                                        ).toLocaleString()}
-                                    </span>
+                <div className="overflow-y-auto p-4">
+                    <div className="space-y-3">
+                        {transactions.map((transaction) => (
+                            <div
+                                key={transaction.id}
+                                className="border rounded-lg p-4"
+                            >
+                                <div className="flex items-start">
+                                    <div className="mr-3 mt-1">
+                                        {transaction.type === "in" ? (
+                                            <ArrowUpRight className="w-5 h-5 text-green-500" />
+                                        ) : (
+                                            <ArrowDownRight className="w-5 h-5 text-red-500" />
+                                        )}
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="flex justify-between items-start mb-1">
+                                            <span className="font-medium">
+                                                {transaction.type === "in"
+                                                    ? "Added"
+                                                    : "Removed"}{" "}
+                                                {transaction.quantity} units
+                                            </span>
+                                            <span className="text-sm text-gray-500 ml-2">
+                                                {new Date(
+                                                    transaction.created_at
+                                                ).toLocaleString()}
+                                            </span>
+                                        </div>
+                                        <div className="text-gray-600">
+                                            Reason: {transaction.reason}
+                                        </div>
+                                        <div className="text-sm text-gray-500 mt-1">
+                                            By:{" "}
+                                            {transaction.user?.name ||
+                                                "Unknown user"}
+                                        </div>
+                                    </div>
                                 </div>
-                                <p className="text-gray-600 mt-1">
-                                    Reason: {transaction.reason}
-                                </p>
-                                <p className="text-sm text-gray-500 mt-1">
-                                    By:{" "}
-                                    {transaction.user?.name || "Unknown user"}
-                                </p>
                             </div>
-                        </div>
-                    ))}
+                        ))}
 
-                    {transactions.length === 0 && (
-                        <div className="text-center text-gray-500 py-4">
-                            No transactions found
-                        </div>
-                    )}
+                        {transactions.length === 0 && (
+                            <div className="text-center text-gray-500 py-4">
+                                No transactions found
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

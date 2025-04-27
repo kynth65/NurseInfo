@@ -286,72 +286,55 @@ export default function PatientView() {
                     <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                         <button
                             onClick={() => generatePDF()}
-                            className="bg-violet-500 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
+                            className="bg-purple-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
                         >
                             <Download className="w-4 h-4" />
-                            <span className="hidden sm:inline">
-                                Download PDF
-                            </span>
-                            <span className="sm:hidden">PDF</span>
+                            <span>PDF</span>
                         </button>
 
                         {hasRiskAssessment ? (
-                            <div className="flex gap-2">
-                                <button
-                                    onClick={handleDownloadRiskAssessment}
-                                    className="bg-green-500 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
-                                >
-                                    <FileText className="w-4 h-4" />
-                                    <span className="hidden sm:inline">
-                                        View Assessment
-                                    </span>
-                                    <span className="sm:hidden">View</span>
-                                </button>
-                                {/* Remove the "New Assessment" button or add admin-only check */}
-                            </div>
+                            <button
+                                onClick={handleDownloadRiskAssessment}
+                                className="bg-purple-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
+                            >
+                                <FileText className="w-4 h-4" />
+                                <span>Assessment</span>
+                            </button>
                         ) : (
                             <button
                                 onClick={() =>
                                     navigate(`/risk-assessment/${id}`)
                                 }
-                                className="bg-amber-500 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
+                                className="bg-purple-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
                             >
                                 <FileText className="w-4 h-4" />
-                                <span className="hidden sm:inline">
-                                    New Risk Assessment
-                                </span>
-                                <span className="sm:hidden">New Risk</span>
+                                <span>Assessment</span>
                             </button>
                         )}
+
                         <button
                             onClick={() => setShowNewVisitForm(true)}
-                            className="bg-blue-500 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
+                            className="bg-purple-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
                         >
                             <Plus className="w-4 h-4" />
-                            <span className="hidden sm:inline">New Visit</span>
-                            <span className="sm:hidden">Visit</span>
+                            <span>Visit</span>
                         </button>
+
                         {!patient.family_id ? (
                             <button
                                 onClick={() => setShowFamilyModal(true)}
-                                className="bg-green-500 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
+                                className="bg-purple-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
                             >
                                 <Users className="w-4 h-4" />
-                                <span className="hidden sm:inline">
-                                    Add to Family
-                                </span>
-                                <span className="sm:hidden">Add Family</span>
+                                <span>Family</span>
                             </button>
                         ) : (
                             <button
                                 onClick={handleRemoveFromFamily}
-                                className="bg-red-500 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
+                                className="bg-purple-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
                             >
                                 <Users className="w-4 h-4" />
-                                <span className="hidden sm:inline">
-                                    Remove from Family
-                                </span>
-                                <span className="sm:hidden">Remove</span>
+                                <span>Unfamily</span>
                             </button>
                         )}
                     </div>
@@ -534,22 +517,7 @@ export default function PatientView() {
                                     )}
                                 </p>
                             </div>
-                            <div>
-                                <p className="text-sm text-gray-600">
-                                    Blood Pressure
-                                </p>
-                                <p>
-                                    {latestRiskAssessment.form_data
-                                        ?.bloodPressure || "Not recorded"}
-                                </p>
-                            </div>
-                            <div>
-                                <p className="text-sm text-gray-600">BMI</p>
-                                <p>
-                                    {latestRiskAssessment.form_data?.bmi ||
-                                        "Not calculated"}
-                                </p>
-                            </div>
+
                             {latestRiskAssessment.form_data?.bloodSugar && (
                                 <div>
                                     <p className="text-sm text-gray-600">
@@ -563,14 +531,6 @@ export default function PatientView() {
                                     </p>
                                 </div>
                             )}
-                        </div>
-                        <div className="mt-4">
-                            <button
-                                onClick={handleRiskAssessmentClick}
-                                className="text-sm text-purple-600 hover:text-purple-800"
-                            >
-                                Create New Assessment
-                            </button>
                         </div>
                     </div>
                 )}
