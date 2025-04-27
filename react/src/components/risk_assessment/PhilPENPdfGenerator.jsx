@@ -156,33 +156,33 @@ const PhilPENPdfGenerator = ({
         // Add direct styles to override any Tailwind styles
         const overrideStyles = document.createElement("style");
         overrideStyles.textContent = `
-      .philpen-pdf-content * {
-        color: #000000 !important;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-      }
-      .philpen-pdf-content .philpen-header-title h1,
-      .philpen-pdf-content .philpen-header-title h2,
-      .philpen-pdf-content .text-purple-600 {
-        color: #9333ea !important;
-      }
-      .philpen-pdf-content .philpen-section-title,
-      .philpen-pdf-content .bg-purple-600 {
-        background-color: #9333ea !important;
-        color: #ffffff !important;
-      }
-      .philpen-pdf-content .text-yellow-700 {
-        color: #a16207 !important;
-      }
-      .philpen-pdf-content .bg-yellow-50 {
-        background-color: #fefce8 !important;
-      }
-      .philpen-pdf-content .text-gray-500 {
-        color: #6b7280 !important;
-      }
-      .philpen-pdf-content .philpen-label-cell {
-        background-color: #f9fafb !important;
-      }
-    `;
+          .philpen-pdf-content * {
+            color: #000000 !important;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+          }
+          .philpen-pdf-content .philpen-header-title h1,
+          .philpen-pdf-content .philpen-header-title h2,
+          .philpen-pdf-content .text-purple-600 {
+            color: #9333ea !important;
+          }
+          .philpen-pdf-content .philpen-section-title,
+          .philpen-pdf-content .bg-purple-600 {
+            background-color: #9333ea !important;
+            color: #ffffff !important;
+          }
+          .philpen-pdf-content .text-yellow-700 {
+            color: #a16207 !important;
+          }
+          .philpen-pdf-content .bg-yellow-50 {
+            background-color: #fefce8 !important;
+          }
+          .philpen-pdf-content .text-gray-500 {
+            color: #6b7280 !important;
+          }
+          .philpen-pdf-content .philpen-label-cell {
+            background-color: #f9fafb !important;
+          }
+        `;
         printArea.appendChild(overrideStyles);
 
         const medicalHistorySection = printArea.querySelector(
@@ -200,6 +200,7 @@ const PhilPENPdfGenerator = ({
             riskScreeningSection.style.marginTop = "40px";
             riskScreeningSection.style.paddingTop = "110px";
         }
+
         // Create configuration for jsPDF
         const opt = {
             margin: [10, 10, 10, 10],
@@ -235,8 +236,28 @@ const PhilPENPdfGenerator = ({
             html2pdf()
                 .from(printArea)
                 .set(opt)
-                .save()
-                .then(() => {
+                .outputPdf("blob") // This gets the PDF as a blob instead of triggering a download
+                .then((pdfBlob) => {
+                    // Save the blob to state for later use
+                    setPdfBlob(pdfBlob);
+
+                    // Call the onSave function with the PDF blob
+                    if (onSave) {
+                        onSave(pdfBlob);
+                    }
+
+                    // Also trigger the download
+                    const pdfUrl = URL.createObjectURL(pdfBlob);
+                    const a = document.createElement("a");
+                    a.href = pdfUrl;
+                    a.download = `PhilPEN_Risk_Assessment_${
+                        formData.patientName.replace(/\s+/g, "_") || "FORM"
+                    }.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(pdfUrl);
+
                     // Re-enable button after PDF generation completes
                     if (prevButton) prevButton.disabled = false;
                 })

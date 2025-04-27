@@ -307,24 +307,13 @@ export default function PatientView() {
                                     </span>
                                     <span className="sm:hidden">View</span>
                                 </button>
-                                <button
-                                    onClick={() =>
-                                        navigate(
-                                            `/risk-assessment/${id}?new=true`
-                                        )
-                                    }
-                                    className="bg-amber-500 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
-                                >
-                                    <Plus className="w-4 h-4" />
-                                    <span className="hidden sm:inline">
-                                        New Assessment
-                                    </span>
-                                    <span className="sm:hidden">New</span>
-                                </button>
+                                {/* Remove the "New Assessment" button or add admin-only check */}
                             </div>
                         ) : (
                             <button
-                                onClick={handleRiskAssessmentClick}
+                                onClick={() =>
+                                    navigate(`/risk-assessment/${id}`)
+                                }
                                 className="bg-amber-500 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
                             >
                                 <FileText className="w-4 h-4" />
@@ -334,7 +323,6 @@ export default function PatientView() {
                                 <span className="sm:hidden">New Risk</span>
                             </button>
                         )}
-
                         <button
                             onClick={() => setShowNewVisitForm(true)}
                             className="bg-blue-500 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"

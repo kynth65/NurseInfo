@@ -70,18 +70,14 @@ class Patient extends Model
     {
         return $this->hasMany(RiskAssessment::class);
     }
-    
-    /**
-     * Check if patient has any risk assessment
-     */
+
+    // Check if patient has any risk assessment
     public function hasRiskAssessment()
     {
         return $this->riskAssessments()->exists();
     }
-    
-    /**
-     * Get the latest risk assessment
-     */
+
+    // Get the latest risk assessment
     public function getLatestRiskAssessment()
     {
         return $this->riskAssessments()->latest()->first();

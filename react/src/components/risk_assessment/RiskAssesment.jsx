@@ -388,15 +388,25 @@ const RiskAssessment = () => {
     };
 
     const handleSaveAssessment = async (pdfBlob) => {
-        if (!pdfBlob || !patientId) return;
+        if (!pdfBlob || !patientId) {
+            console.error("Missing PDF blob or patient ID!");
+            return;
+        }
 
         try {
             setSavingAssessment(true);
+            console.log("Starting save with PDF blob size:", pdfBlob.size);
 
             // Create FormData object for file upload
             const formDataToSend = new FormData();
             formDataToSend.append("patient_id", patientId);
-            formDataToSend.append("form_data", JSON.stringify(formData));
+
+            // Log form data before stringifying
+            console.log("Form data being saved:", formData);
+
+            const formDataJson = JSON.stringify(formData);
+            formDataToSend.append("form_data", formDataJson);
+
             formDataToSend.append(
                 "assessment_date",
                 formData.assessmentDate || new Date().toISOString()
@@ -410,6 +420,8 @@ const RiskAssessment = () => {
             );
             formDataToSend.append("pdf_file", pdfFile);
 
+            console.log("Sending request to server");
+
             // Send to server
             const response = await axiosClient.post(
                 "/risk-assessments",
@@ -421,6 +433,7 @@ const RiskAssessment = () => {
                 }
             );
 
+            console.log("Server response:", response.data);
             setSaveSuccess(true);
 
             // Navigate back to patient view after successful save
@@ -429,6 +442,15 @@ const RiskAssessment = () => {
             }, 2000);
         } catch (error) {
             console.error("Error saving risk assessment:", error);
+            console.error("Error details:", {
+                message: error.message,
+                response: error.response?.data,
+                status: error.response?.status,
+            });
+            alert(
+                "Failed to save: " +
+                    (error.response?.data?.message || error.message)
+            );
         } finally {
             setSavingAssessment(false);
         }
