@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useStateContext } from "../../context/ContextProvider";
 import { useNavigate } from "react-router-dom";
+import axiosClient from "../../axios-client";
 import {
     User,
     Phone,
@@ -19,22 +20,46 @@ import {
 export default function Profile() {
     const { user } = useStateContext();
     const navigate = useNavigate();
+    const [userName, setUserName] = useState(user?.name || "");
+    const [userEmail, setUserEmail] = useState(user?.email || "");
+
+    // Fetch user data if not available in context
+    useEffect(() => {
+        if (!user?.name) {
+            const fetchUserData = async () => {
+                try {
+                    const response = await axiosClient.get("/user");
+                    if (response.data && response.data.name) {
+                        setUserName(response.data.name);
+                        setUserEmail(response.data.email || "");
+                    }
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
+                }
+            };
+
+            fetchUserData();
+        } else {
+            setUserName(user.name);
+            setUserEmail(user.email || "");
+        }
+    }, [user]);
 
     // Use data from the PDF
     const profileData = {
         // Basic info
         id: user?.id || 1,
-        name: "Georgia Marta E. Diaz",
-        email: "georgia.diaz@mcu.edu.ph",
+        name: userName, // Use the dynamic user name
+        email: userEmail, // Use the dynamic user email
         joined_date: "January 15, 2024",
 
         // Work information
-        position: "Project Leader",
+        position: "", // Removed "Project Leader"
         contact_number: "+63 919 876 5432",
         address: "Manila Central University, College of Nursing",
         department: "Nursing Informatics",
         shift: "SY 2024-2025, 2nd Semester",
-        role: "HEAL Project Leader",
+        role: "HEAL Project member",
 
         // Certifications aligned with nursing background
         certifications: [
@@ -86,6 +111,7 @@ export default function Profile() {
 
     // Generate initials for avatar
     const getInitials = (name) => {
+        if (!name) return "";
         const nameParts = name.split(" ");
         return nameParts.length > 1
             ? `${nameParts[0][0]}${nameParts[1][0]}`
@@ -108,9 +134,6 @@ export default function Profile() {
                                 <h1 className="text-2xl font-bold text-white">
                                     {profileData.name}
                                 </h1>
-                                <p className="text-purple-100">
-                                    {profileData.position}
-                                </p>
                                 <div className="flex items-center justify-center mt-2 text-purple-200 text-sm">
                                     <Shield size={14} className="mr-1" />
                                     <span>
@@ -119,36 +142,6 @@ export default function Profile() {
                                     </span>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    {/* Stats - Made responsive with grid */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 sm:divide-y-0 ">
-                        <div className="p-4 text-center">
-                            <p className="text-2xl font-bold text-purple-700">
-                                {profileData.statistics.patients_served}
-                            </p>
-                            <p className="text-sm text-gray-500">Patients</p>
-                        </div>
-                        <div className="p-4 text-center">
-                            <p className="text-2xl font-bold text-purple-700">
-                                {profileData.statistics.vaccination_campaigns}
-                            </p>
-                            <p className="text-sm text-gray-500">Campaigns</p>
-                        </div>
-                        <div className="p-4 text-center sm:border-t-0">
-                            <p className="text-2xl font-bold text-purple-700">
-                                {profileData.statistics.training_hours}
-                            </p>
-                            <p className="text-sm text-gray-500">
-                                Training Hours
-                            </p>
-                        </div>
-                        <div className="p-4 text-center sm:border-t-0">
-                            <p className="text-2xl font-bold text-purple-700">
-                                {profileData.statistics.community_programs}
-                            </p>
-                            <p className="text-sm text-gray-500">Programs</p>
                         </div>
                     </div>
                 </div>
@@ -321,14 +314,7 @@ export default function Profile() {
                                         {profileData.department}
                                     </p>
                                 </div>
-                                <div>
-                                    <p className="text-sm text-gray-500">
-                                        Position
-                                    </p>
-                                    <p className="text-gray-800 font-medium">
-                                        {profileData.position}
-                                    </p>
-                                </div>
+
                                 <div>
                                     <p className="text-sm text-gray-500">
                                         Role

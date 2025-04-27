@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\VisitController;
 use App\Http\Controllers\Api\FamilyController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RiskAssessmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,6 +77,12 @@ Route::post('families/{family}/remove-patient', [FamilyController::class, 'remov
 Route::patch('patients/{patient}/family', [PatientController::class, 'updateFamily']);
 Route::get('patients/{patient}/family-members', [PatientController::class, 'getFamilyMembers']);
 
+// Risk Assessment routes
+Route::post('/risk-assessments', [RiskAssessmentController::class, 'store']);
+Route::get('/risk-assessments/{riskAssessment}', [RiskAssessmentController::class, 'show']);
+Route::get('/risk-assessments/{riskAssessment}/download', [RiskAssessmentController::class, 'downloadPdf']);
+Route::get('/patients/{patient}/risk-assessments', [RiskAssessmentController::class, 'getByPatient']);
+Route::get('/patients/{patient}/risk-assessment/check', [RiskAssessmentController::class, 'checkPatientHasAssessment']);
 
 
 Route::apiResource('events', EventController::class);

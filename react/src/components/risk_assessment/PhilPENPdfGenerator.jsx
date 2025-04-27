@@ -2,7 +2,14 @@ import React, { useRef } from "react";
 import html2pdf from "html2pdf.js";
 import "./PhilPENStyle.css"; // We'll create this style file next
 
-const PhilPENPdfGenerator = ({ formData, onBack }) => {
+const PhilPENPdfGenerator = ({
+    formData,
+    onBack,
+    setPdfBlob,
+    onSave,
+    isSaving,
+    saveSuccess,
+}) => {
     // Ref for PDF generation
     const pdfContentRef = useRef(null);
 

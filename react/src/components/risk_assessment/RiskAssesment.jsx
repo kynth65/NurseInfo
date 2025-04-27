@@ -1,10 +1,31 @@
 import React, { useState, useEffect } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { FaHandHoldingMedical } from "react-icons/fa";
 import PhilPENPdfGenerator from "./PhilPENpdfGenerator";
+import axiosClient from "../../axios-client";
+import Loading from "../Loading"; // Make sure you have this component
 
 const RiskAssessment = () => {
+    const { patientId } = useParams();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const isNewAssessment =
+        new URLSearchParams(location.search).get("new") === "true";
+    const [viewExisting, setViewExisting] = useState(false);
+    const [existingAssessment, setExistingAssessment] = useState(null);
+
+    // Add loading state for patient data
+    const [loading, setLoading] = useState(patientId ? true : false);
+    const [patient, setPatient] = useState(null);
+
+    // Add states for saving assessment
+    const [pdfBlob, setPdfBlob] = useState(null);
+    const [savingAssessment, setSavingAssessment] = useState(false);
+    const [saveSuccess, setSaveSuccess] = useState(false);
+
     // Add view state to switch between form and PDF preview
     const [currentView, setCurrentView] = useState("form");
+
     const [formData, setFormData] = useState({
         // Patient Information
         healthFacility: "",
@@ -188,6 +209,139 @@ const RiskAssessment = () => {
         }
     }, [formData.weight, formData.height]);
 
+    useEffect(() => {
+        const loadPatient = async () => {
+            if (!patientId) return;
+
+            try {
+                setLoading(true);
+
+                // Get URL search params to check if we're creating a new assessment
+                const urlParams = new URLSearchParams(window.location.search);
+                const isNewAssessment = urlParams.get("new") === "true";
+
+                // Get patient data
+                const response = await axiosClient.get(
+                    `/patients/${patientId}`
+                );
+                const patientData = response.data.patient;
+                setPatient(patientData);
+
+                // Check if patient has existing assessment (if we're not explicitly creating a new one)
+                if (!isNewAssessment) {
+                    try {
+                        const assessmentCheck = await axiosClient.get(
+                            `/patients/${patientId}/risk-assessment/check`
+                        );
+
+                        if (
+                            assessmentCheck.data.has_assessment &&
+                            assessmentCheck.data.latest_assessment
+                        ) {
+                            const existingData =
+                                assessmentCheck.data.latest_assessment;
+
+                            // If existing assessment has form data, use it
+                            if (existingData.form_data) {
+                                // Important: Convert any date fields that might be in the form_data
+                                if (existingData.form_data.assessmentDate) {
+                                    existingData.form_data.assessmentDate =
+                                        new Date(
+                                            existingData.form_data.assessmentDate
+                                        )
+                                            .toISOString()
+                                            .substring(0, 10);
+                                }
+
+                                if (existingData.form_data.birthdate) {
+                                    existingData.form_data.birthdate = new Date(
+                                        existingData.form_data.birthdate
+                                    )
+                                        .toISOString()
+                                        .substring(0, 10);
+                                }
+
+                                // Set existing assessment data for view mode
+                                setExistingAssessment(existingData);
+
+                                // Update form data with existing assessment data
+                                setFormData(existingData.form_data);
+
+                                // Go directly to PDF view
+                                setViewExisting(true);
+                                setCurrentView("pdf");
+                                return; // Skip the pre-filling below since we already have all data
+                            }
+                        }
+                    } catch (error) {
+                        console.error(
+                            "Error checking for existing assessments:",
+                            error
+                        );
+                        // Continue with normal flow if we can't check for existing assessments
+                    }
+                }
+
+                // Pre-fill patient information (only if we're not using existing assessment data)
+                setFormData((prev) => ({
+                    ...prev,
+                    assessmentDate: new Date().toISOString().substring(0, 10), // Set today as default
+                    patientName: patientData.full_name,
+                    age: patientData.age || "",
+                    sex:
+                        patientData.gender === "male"
+                            ? "Male"
+                            : patientData.gender === "female"
+                            ? "Female"
+                            : "",
+                    birthdate: patientData.date_of_birth
+                        ? new Date(patientData.date_of_birth)
+                              .toISOString()
+                              .substring(0, 10)
+                        : "",
+                    civilStatus: patientData.civil_status || "",
+                    contactNo: patientData.contact_number || "",
+                    address: patientData.address || "",
+
+                    // Pre-fill medical history if available
+                    historyHypertension: patientData.past_illnesses
+                        ?.toLowerCase()
+                        .includes("hypertension")
+                        ? "Yes"
+                        : "",
+                    historyDiabetes: patientData.past_illnesses
+                        ?.toLowerCase()
+                        .includes("diabetes")
+                        ? "Yes"
+                        : "",
+                    historyAllergies: patientData.allergies ? "Yes" : "",
+
+                    // Pre-fill lifestyle information
+                    tobaccoUse: patientData.smoking_history
+                        ?.toLowerCase()
+                        .includes("never")
+                        ? "Q1"
+                        : patientData.smoking_history
+                              ?.toLowerCase()
+                              .includes("former")
+                        ? "Q3"
+                        : patientData.smoking_history
+                        ? "Q4"
+                        : "",
+                    alcoholConsumption: patientData.alcohol_consumption
+                        ? "Yes"
+                        : "Never",
+                }));
+            } catch (error) {
+                console.error("Error loading patient data:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadPatient();
+    }, [patientId]);
+
     // Validate form fields
     const validateForm = () => {
         const errors = {};
@@ -233,6 +387,53 @@ const RiskAssessment = () => {
         setCurrentView("pdf");
     };
 
+    const handleSaveAssessment = async (pdfBlob) => {
+        if (!pdfBlob || !patientId) return;
+
+        try {
+            setSavingAssessment(true);
+
+            // Create FormData object for file upload
+            const formDataToSend = new FormData();
+            formDataToSend.append("patient_id", patientId);
+            formDataToSend.append("form_data", JSON.stringify(formData));
+            formDataToSend.append(
+                "assessment_date",
+                formData.assessmentDate || new Date().toISOString()
+            );
+
+            // Create a File object from the Blob
+            const pdfFile = new File(
+                [pdfBlob],
+                `risk_assessment_${patientId}.pdf`,
+                { type: "application/pdf" }
+            );
+            formDataToSend.append("pdf_file", pdfFile);
+
+            // Send to server
+            const response = await axiosClient.post(
+                "/risk-assessments",
+                formDataToSend,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
+
+            setSaveSuccess(true);
+
+            // Navigate back to patient view after successful save
+            setTimeout(() => {
+                navigate(`/patients/${patientId}`);
+            }, 2000);
+        } catch (error) {
+            console.error("Error saving risk assessment:", error);
+        } finally {
+            setSavingAssessment(false);
+        }
+    };
+
     // Helper for radio button groups
     const RadioGroup = ({ name, value, onChange }) => (
         <div className="flex items-center space-x-4">
@@ -261,6 +462,16 @@ const RiskAssessment = () => {
         </div>
     );
 
+    const handleBack = () => {
+        if (viewExisting) {
+            // If viewing an existing assessment, go back to patient view
+            navigate(`/patients/${patientId}`);
+        } else {
+            // Otherwise go back to form
+            setCurrentView("form");
+        }
+    };
+
     return (
         <>
             {currentView === "form" ? (
@@ -276,6 +487,10 @@ const RiskAssessment = () => {
                             </div>
                             <p className="mt-1 text-center text-gray-500 text-sm">
                                 Adults ≥20 years old
+                            </p>
+                            <p className="mt-1 text-center text-purple-600 font-medium">
+                                Patient:{" "}
+                                {patient?.full_name || formData.patientName}
                             </p>
                         </div>
                     </div>
@@ -2026,7 +2241,13 @@ const RiskAssessment = () => {
             ) : (
                 <PhilPENPdfGenerator
                     formData={formData}
-                    onBack={() => setCurrentView("form")}
+                    onBack={handleBack}
+                    setPdfBlob={setPdfBlob}
+                    onSave={viewExisting ? null : handleSaveAssessment}
+                    isSaving={savingAssessment}
+                    saveSuccess={saveSuccess}
+                    viewExisting={viewExisting}
+                    patientId={patientId}
                 />
             )}
         </>

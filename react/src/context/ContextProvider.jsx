@@ -26,10 +26,13 @@ export const ContextProvider = ({ children }) => {
 
     const setUser = (user) => {
         console.log("Setting user in context:", user);
+
+        // Don't block setting user if it doesn't have a role
+        // Just log a warning instead
         if (user && !user.role) {
-            console.error("Attempting to set user without role:", user);
-            return;
+            console.warn("User doesn't have a role, setting anyway:", user);
         }
+
         _setUser(user);
         if (user) {
             localStorage.setItem("USER", JSON.stringify(user));

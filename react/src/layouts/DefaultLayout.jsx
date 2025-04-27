@@ -263,22 +263,6 @@ export default function DefaultLayout() {
                     );
                 })}
             </nav>
-            <div className="p-4 border-t">
-                <Link to="/profile">
-                    <div className="flex items-center">
-                        <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white">
-                            {user?.name?.[0]?.toUpperCase() || "U"}
-                        </div>
-                        {!isCollapsed && (
-                            <div className="ml-3">
-                                <p className="font-medium text-sm">
-                                    {user?.name || "User"}
-                                </p>
-                            </div>
-                        )}
-                    </div>
-                </Link>
-            </div>
         </div>
     );
 
@@ -465,7 +449,7 @@ export default function DefaultLayout() {
                                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg z-50 py-1">
                                     <div className="px-4 py-3 border-b">
                                         <p className="text-sm font-medium">
-                                            {user?.name || "User"}
+                                            {user?.name || ""}
                                         </p>
                                         <p className="text-xs text-gray-500 truncate">
                                             {user?.email}

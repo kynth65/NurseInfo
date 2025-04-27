@@ -65,4 +65,26 @@ class Patient extends Model
         
         return $this->family->patients()->where('id', '!=', $this->id)->get();
     }
+
+    public function riskAssessments()
+    {
+        return $this->hasMany(RiskAssessment::class);
+    }
+    
+    /**
+     * Check if patient has any risk assessment
+     */
+    public function hasRiskAssessment()
+    {
+        return $this->riskAssessments()->exists();
+    }
+    
+    /**
+     * Get the latest risk assessment
+     */
+    public function getLatestRiskAssessment()
+    {
+        return $this->riskAssessments()->latest()->first();
+    }
+    
 }

@@ -122,6 +122,50 @@ class PatientController extends Controller
             'patient' => $patient->load('family.patients')
         ]);
     }
+     // Get the latest risk assessment for a patient
+     public function getRiskAssessment(Patient $patient)
+     {
+         $riskAssessment = $patient->getLatestRiskAssessment();
+         
+         return response()->json([
+             'risk_assessment' => $riskAssessment
+         ]);
+     }
+
+      // Store a new risk assessment for a patient
+    public function storeRiskAssessment(Request $request, Patient $patient)
+    {
+        $validated = $request->validate([
+            'form_data' => 'required|array',
+            'pdf_file' => 'required|file|mimes:pdf',
+            'assessment_date' => 'required|date'
+        ]);
+        
+        // Store the PDF file
+        $pdfPath = $request->file('pdf_file')->store('risk-assessments', 'public');
+        
+        // Create the risk assessment record
+        $riskAssessment = $patient->riskAssessments()->create([
+            'form_data' => $validated['form_data'],
+            'pdf_path' => $pdfPath,
+            'assessment_date' => $validated['assessment_date']
+        ]);
+        
+        return response()->json([
+            'risk_assessment' => $riskAssessment
+        ], 201);
+    }
+     // Download a risk assessment PDF
+     public function downloadRiskAssessment(RiskAssessment $riskAssessment)
+     {
+         if (!Storage::disk('public')->exists($riskAssessment->pdf_path)) {
+             return response()->json([
+                 'message' => 'PDF file not found'
+             ], 404);
+         }
+         
+         return Storage::disk('public')->download($riskAssessment->pdf_path);
+     }
 
     public function getFamilyMembers(Patient $patient)
     {

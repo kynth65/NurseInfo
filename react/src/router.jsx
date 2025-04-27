@@ -134,8 +134,13 @@ const router = createBrowserRouter([
                 path: "/vaccination",
                 element: <VaccinationDashboard />,
             },
+            // Risk Assessment routes - both with and without patient ID
             {
                 path: "/risk-assessment",
+                element: <RiskAssessment />,
+            },
+            {
+                path: "/risk-assessment/:patientId",
                 element: <RiskAssessment />,
             },
         ],

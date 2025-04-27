@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import axiosClient from "../../axios-client";
-import { Plus, Download, Users, UserPlus } from "lucide-react";
+import { Plus, Download, Users, UserPlus, FileText } from "lucide-react";
 import { format } from "date-fns";
 import NewVisitForm from "./NewVisitForm";
 import Loading from "../Loading";
@@ -10,12 +10,15 @@ import { SelectFamilyModal } from "../families/SelectFamilyModal";
 
 export default function PatientView() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [patient, setPatient] = useState(null);
     const [visits, setVisits] = useState([]);
     const [familyMembers, setFamilyMembers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showNewVisitForm, setShowNewVisitForm] = useState(false);
     const [showFamilyModal, setShowFamilyModal] = useState(false);
+    const [hasRiskAssessment, setHasRiskAssessment] = useState(false);
+    const [latestRiskAssessment, setLatestRiskAssessment] = useState(null);
 
     useEffect(() => {
         loadPatientAndVisits();
@@ -23,12 +26,16 @@ export default function PatientView() {
 
     const loadPatientAndVisits = async () => {
         try {
-            const [patientRes, visitsRes] = await Promise.all([
-                axiosClient.get(`/patients/${id}`),
-                axiosClient.get(`/patients/${id}/visits`),
-            ]);
+            const [patientRes, visitsRes, riskAssessmentRes] =
+                await Promise.all([
+                    axiosClient.get(`/patients/${id}`),
+                    axiosClient.get(`/patients/${id}/visits`),
+                    axiosClient.get(`/patients/${id}/risk-assessment/check`),
+                ]);
             setPatient(patientRes.data.patient);
             setVisits(visitsRes.data.visits);
+            setHasRiskAssessment(riskAssessmentRes.data.has_assessment);
+            setLatestRiskAssessment(riskAssessmentRes.data.latest_assessment);
 
             // If patient has a family, load family members
             if (patientRes.data.patient.family_id) {
@@ -81,6 +88,41 @@ export default function PatientView() {
             loadPatientAndVisits();
         } catch (err) {
             console.error("Failed to remove patient from family:", err);
+        }
+    };
+
+    const handleRiskAssessmentClick = () => {
+        // If there's an existing assessment, view it by default
+        if (hasRiskAssessment && latestRiskAssessment) {
+            handleDownloadRiskAssessment();
+        } else {
+            // Navigate to risk assessment form with patient data for a new assessment
+            navigate(`/risk-assessment/${id}`);
+        }
+    };
+
+    const handleDownloadRiskAssessment = async () => {
+        try {
+            if (!latestRiskAssessment) return;
+
+            const response = await axiosClient.get(
+                `/risk-assessments/${latestRiskAssessment.id}/download`,
+                { responseType: "blob" }
+            );
+
+            // Create a download link and click it
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute(
+                "download",
+                `RiskAssessment_${patient.full_name}.pdf`
+            );
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (err) {
+            console.error("Failed to download risk assessment:", err);
         }
     };
 
@@ -252,6 +294,47 @@ export default function PatientView() {
                             </span>
                             <span className="sm:hidden">PDF</span>
                         </button>
+
+                        {hasRiskAssessment ? (
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={handleDownloadRiskAssessment}
+                                    className="bg-green-500 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
+                                >
+                                    <FileText className="w-4 h-4" />
+                                    <span className="hidden sm:inline">
+                                        View Assessment
+                                    </span>
+                                    <span className="sm:hidden">View</span>
+                                </button>
+                                <button
+                                    onClick={() =>
+                                        navigate(
+                                            `/risk-assessment/${id}?new=true`
+                                        )
+                                    }
+                                    className="bg-amber-500 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
+                                >
+                                    <Plus className="w-4 h-4" />
+                                    <span className="hidden sm:inline">
+                                        New Assessment
+                                    </span>
+                                    <span className="sm:hidden">New</span>
+                                </button>
+                            </div>
+                        ) : (
+                            <button
+                                onClick={handleRiskAssessmentClick}
+                                className="bg-amber-500 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
+                            >
+                                <FileText className="w-4 h-4" />
+                                <span className="hidden sm:inline">
+                                    New Risk Assessment
+                                </span>
+                                <span className="sm:hidden">New Risk</span>
+                            </button>
+                        )}
+
                         <button
                             onClick={() => setShowNewVisitForm(true)}
                             className="bg-blue-500 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
@@ -433,6 +516,76 @@ export default function PatientView() {
                         </div>
                     </div>
                 </div>
+
+                {/* Risk Assessment Section - Only show if patient has a risk assessment */}
+                {hasRiskAssessment && latestRiskAssessment && (
+                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow mb-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-lg font-semibold">
+                                Risk Assessment
+                            </h2>
+                            <button
+                                onClick={handleDownloadRiskAssessment}
+                                className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                            >
+                                <Download className="w-4 h-4" />
+                                <span>Download PDF</span>
+                            </button>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <p className="text-sm text-gray-600">
+                                    Assessment Date
+                                </p>
+                                <p>
+                                    {format(
+                                        new Date(
+                                            latestRiskAssessment.assessment_date
+                                        ),
+                                        "MMM d, yyyy"
+                                    )}
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-600">
+                                    Blood Pressure
+                                </p>
+                                <p>
+                                    {latestRiskAssessment.form_data
+                                        ?.bloodPressure || "Not recorded"}
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-600">BMI</p>
+                                <p>
+                                    {latestRiskAssessment.form_data?.bmi ||
+                                        "Not calculated"}
+                                </p>
+                            </div>
+                            {latestRiskAssessment.form_data?.bloodSugar && (
+                                <div>
+                                    <p className="text-sm text-gray-600">
+                                        Blood Sugar
+                                    </p>
+                                    <p>
+                                        {
+                                            latestRiskAssessment.form_data
+                                                .bloodSugar
+                                        }
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                        <div className="mt-4">
+                            <button
+                                onClick={handleRiskAssessmentClick}
+                                className="text-sm text-purple-600 hover:text-purple-800"
+                            >
+                                Create New Assessment
+                            </button>
+                        </div>
+                    </div>
+                )}
 
                 {/* Family Members Section - Only show if patient has a family */}
                 {patient.family_id && familyMembers.length > 0 && (
