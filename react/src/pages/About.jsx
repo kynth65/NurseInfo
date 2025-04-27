@@ -14,6 +14,17 @@ import {
     Activity,
     Heart,
 } from "lucide-react";
+import Troy from "../assets/troy.jpg";
+import Amos from "../assets/amos.jpg";
+import Irish from "../assets/irish.jpg";
+import Thea from "../assets/thea.jpg";
+import Joshua from "../assets/joshua.jpg";
+import Georgia from "../assets/Georgia.jpg";
+
+import Lee from "../assets/lee.jpg";
+
+import HealhCenter from "../assets/health_center.jpg";
+
 import { FaHandHoldingMedical } from "react-icons/fa";
 
 export default function About() {
@@ -72,7 +83,7 @@ export default function About() {
                     <div className="mt-10 lg:mt-0 relative">
                         <div className="aspect-w-16 aspect-h-9 rounded-xl overflow-hidden shadow-xl">
                             <img
-                                src="/api/placeholder/600/400"
+                                src={HealhCenter}
                                 alt="Healthcare workers using digital tools"
                                 className="object-cover w-full h-full"
                             />
@@ -222,7 +233,10 @@ export default function About() {
             {/* Team Section */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl font-bold text-gray-900">
+                    <div className="flex items-center justify-center space-x-4 mb-4">
+                        <Users className="h-10 w-10 text-purple-600" />
+                    </div>
+                    <h2 className="text-3xl font-extrabold text-gray-900 mb-4 flex items-center justify-center gap-3">
                         Meet Our Team
                     </h2>
                     <p className="mt-4 text-xl text-gray-600 max-w-3xl mx-auto">
@@ -234,19 +248,19 @@ export default function About() {
                     <TeamMember
                         name="Georgia Marta E. Diaz"
                         role="Team Leader"
-                        image="/api/placeholder/300/300"
+                        image={Georgia}
                         bio="Project coordinator and lead system designer"
                     />
                     <TeamMember
                         name="Thea Kim M. Castuciano"
                         role="Team Member"
-                        image="/api/placeholder/300/300"
+                        image={Thea}
                         bio="User experience design and clinical workflow specialist"
                     />
                     <TeamMember
                         name="Irish Hazel N. Cruz"
                         role="Team Member"
-                        image="/api/placeholder/300/300"
+                        image={Irish}
                         bio="Data management and healthcare analytics expert"
                     />
                 </div>
@@ -254,19 +268,19 @@ export default function About() {
                     <TeamMember
                         name="Sean Thomas M. Cubarde"
                         role="Team Member"
-                        image="/api/placeholder/300/300"
+                        image={Lee}
                         bio="System architecture and integration specialist"
                     />
                     <TeamMember
                         name="Joshua N. Dela Cruz"
                         role="Team Member"
-                        image="/api/placeholder/300/300"
+                        image={Joshua}
                         bio="Database design and security implementation"
                     />
                     <TeamMember
                         name="Troy Gideon C. Dela Cruz"
                         role="Team Member"
-                        image="/api/placeholder/300/300"
+                        image={Troy}
                         bio="Front-end development and user interface design"
                     />
                 </div>
@@ -274,7 +288,7 @@ export default function About() {
                     <TeamMember
                         name="John Amos Delantar"
                         role="Team Member"
-                        image="/api/placeholder/300/300"
+                        image={Amos}
                         bio="Testing, quality assurance, and documentation"
                     />
                 </div>
@@ -347,13 +361,18 @@ function StatCard({ number, label }) {
 }
 
 function TeamMember({ name, role, image, bio }) {
+    const specialImages = [Irish, Troy];
+    const isSpecialImage = specialImages.includes(image);
+
     return (
         <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition duration-200">
             <div className="aspect-w-1 aspect-h-1">
                 <img
                     src={image}
                     alt={name}
-                    className="object-cover w-full h-64"
+                    className={`object-cover w-full h-100 ${
+                        isSpecialImage ? "object-top" : "object-center"
+                    }`}
                 />
             </div>
             <div className="p-6">
