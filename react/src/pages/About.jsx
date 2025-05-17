@@ -20,8 +20,7 @@ import Irish from "../assets/irish.jpg";
 import Thea from "../assets/thea.jpg";
 import Joshua from "../assets/joshua.jpg";
 import Georgia from "../assets/Georgia.jpg";
-
-import Lee from "../assets/lee.jpg";
+import Sean from "../assets/Sean.jpg";
 
 import HealhCenter from "../assets/health_center.jpg";
 
@@ -268,7 +267,7 @@ export default function About() {
                     <TeamMember
                         name="Sean Thomas M. Cubarde"
                         role="Team Member"
-                        image={Lee}
+                        image={Sean}
                         bio="System architecture and integration specialist"
                     />
                     <TeamMember
