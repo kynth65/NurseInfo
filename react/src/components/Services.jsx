@@ -253,32 +253,6 @@ export default function Services() {
                             </div>
                         </div>
                     </div>
-
-                    {/* CTA Section
-                    <div className="mt-16">
-                        <div className="bg-purple-700 rounded-lg shadow-xl overflow-hidden">
-                            <div className="px-6 py-12 sm:px-12 lg:py-16 lg:px-16 md:flex md:items-center md:justify-between">
-                                <div>
-                                    <h2 className="text-2xl font-extrabold text-white tracking-tight sm:text-3xl">
-                                        Ready to transform healthcare in your
-                                        barangay?
-                                    </h2>
-                                    <p className="mt-3 max-w-3xl text-lg leading-6 text-purple-100">
-                                        Implement HEAL in your barangay health
-                                        center today.
-                                    </p>
-                                </div>
-                                <div className="mt-8 md:mt-0">
-                                    <a
-                                        href="#"
-                                        className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-purple-700 bg-white hover:bg-purple-50 transition duration-150 ease-in-out"
-                                    >
-                                        Get Started
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div> */}
                 </div>
             </div>
             <Footer />
