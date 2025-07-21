@@ -293,7 +293,7 @@ export default function NewVisitForm({ patientId, onClose, onSave }) {
 
                         <div className="col-span-2">
                             <label className="block text-sm font-medium mb-1">
-                                Diagnosis
+                                Nursing Diagnosis
                             </label>
                             <textarea
                                 value={formData.diagnosis}

@@ -1,0 +1,223 @@
+/* PhilPEN Calculator - Scoped styles */
+.philpen-calculator {
+  /* Base styles for the calculator container only */
+  font-family: Arial, sans-serif;
+}
+
+.philpen-calculator .philpen-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.875rem;
+}
+
+.philpen-calculator .philpen-btn-primary {
+  background-color: #9333ea;
+  color: white;
+  border: none;
+}
+
+.philpen-calculator .philpen-btn-primary:hover {
+  background-color: #7e22ce;
+}
+
+.philpen-calculator .philpen-btn-secondary {
+  background-color: white;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.philpen-calculator .philpen-btn-secondary:hover {
+  background-color: #f5f5f5;
+}
+
+/* PDF-specific styles */
+.philpen-pdf-content {
+  background-color: white;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #000;
+  font-family: Arial, sans-serif;
+  width: 100%;
+  padding: 20px !important;
+  box-sizing: border-box;
+}
+
+/* Header styling */
+.philpen-pdf-content .philpen-header-title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.philpen-pdf-content .philpen-logo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.philpen-pdf-content .philpen-header-title h1 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: #9333ea !important;
+}
+
+.philpen-pdf-content .philpen-header-title h2 {
+  font-size: 14px;
+  font-weight: normal;
+  color: #9333ea !important;
+  margin-top: 0;
+}
+
+/* Section titles - purple to match images */
+.philpen-pdf-content .philpen-section-title {
+  font-weight: bold;
+  padding: 8px;
+  margin: 0 0 1px 0;
+  background-color: #9333ea !important; /* Purple background matching images */
+  color: white !important;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+/* Table styling to match your desired layout */
+.philpen-pdf-content table.philpen-info-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  table-layout: fixed;
+}
+
+.philpen-pdf-content table.philpen-info-table th,
+.philpen-pdf-content table.philpen-info-table td {
+  padding: 8px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.philpen-pdf-content table.philpen-info-table th {
+  background-color: #f9f9f9;
+  font-weight: normal;
+}
+
+/* Section container for spacing */
+.philpen-pdf-content .philpen-section {
+  margin-bottom: 15px;
+}
+
+/* Media query for print - vital for PDF generation */
+@media print {
+  .philpen-pdf-content {
+    background-color: white !important;
+    font-size: 11px !important;
+    padding: 10mm !important;
+    margin-top: 40px !important; /* Add top margin to help with page breaks */
+  }
+
+  /* Make the form title purple in PDF */
+  .philpen-pdf-content .philpen-header-title h1 {
+    color: #9333ea !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+  }
+
+  .philpen-pdf-content .philpen-header-title h2 {
+    color: #9333ea !important;
+    font-size: 14px !important;
+  }
+
+  /* Section headers - Purple background */
+  .philpen-pdf-content .philpen-section-title {
+    background-color: #9333ea !important;
+    color: white !important;
+    font-weight: bold !important;
+    padding: 8px !important;
+    font-size: 12px !important;
+    text-transform: uppercase !important;
+    margin: 0 0 1px 0 !important;
+  }
+
+  .philpen-pdf-content .past-medical-history-section {
+    margin-top: 40px !important;
+    padding-top: 10px !important;
+  }
+
+  .philpen-pdf-content .risk-screening-section {
+    margin-top: 40px !important;
+    padding-top: 10px !important;
+  }
+
+  /* Table styles for print */
+  .philpen-pdf-content table.philpen-info-table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+    margin-bottom: 20px !important;
+  }
+
+  .philpen-pdf-content table.philpen-info-table th,
+  .philpen-pdf-content table.philpen-info-table td {
+    border: 1px solid #000 !important;
+    padding: 8px !important;
+    font-size: 11px !important;
+  }
+
+  /* Overwrite any Tailwind styles that might interfere */
+  .philpen-pdf-content * {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+  }
+
+  /* Page setup */
+  @page {
+    size: legal portrait;
+    margin: 10mm !important;
+  }
+}
+
+/* Override styles for specific layout elements */
+.philpen-pdf-content .philpen-section-title.bg-purple-600 {
+  background-color: #9333ea !important;
+  color: white !important;
+}
+
+/* Override for the labels cells */
+.philpen-pdf-content td.philpen-label-cell {
+  background-color: #f9f9f9 !important;
+  font-weight: normal !important;
+}
+
+/* Override for table layouts */
+.philpen-pdf-content .philpen-grid-row {
+  display: flex;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #ddd;
+}
+
+.philpen-pdf-content .philpen-grid-cell {
+  padding: 8px;
+  border-right: 1px solid #ddd;
+  flex: 1;
+}
+
+/* Warning box styling */
+.philpen-pdf-content .warning-box {
+  background-color: #fefce8;
+  border: 1px solid #fef08a;
+  color: #a16207;
+  padding: 8px;
+  margin-top: 8px;
+  font-size: 11px;
+}
+
+/* Fix checkbox display */
+.philpen-pdf-content .checkbox-display {
+  display: inline-block;
+  margin-right: 5px;
+}
+
+/* Style for page breaks in PDF */
+.philpen-pdf-content .page-break {
+  page-break-before: always;
+}

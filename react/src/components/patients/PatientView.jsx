@@ -1,18 +1,24 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import axiosClient from "../../axios-client";
-import { Plus, Download } from "lucide-react";
+import { Plus, Download, Users, UserPlus, FileText } from "lucide-react";
 import { format } from "date-fns";
 import NewVisitForm from "./NewVisitForm";
 import Loading from "../Loading";
 import html2pdf from "html2pdf.js";
+import { SelectFamilyModal } from "../families/SelectFamilyModal";
 
 export default function PatientView() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [patient, setPatient] = useState(null);
     const [visits, setVisits] = useState([]);
+    const [familyMembers, setFamilyMembers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showNewVisitForm, setShowNewVisitForm] = useState(false);
+    const [showFamilyModal, setShowFamilyModal] = useState(false);
+    const [hasRiskAssessment, setHasRiskAssessment] = useState(false);
+    const [latestRiskAssessment, setLatestRiskAssessment] = useState(null);
 
     useEffect(() => {
         loadPatientAndVisits();
@@ -20,18 +26,106 @@ export default function PatientView() {
 
     const loadPatientAndVisits = async () => {
         try {
-            const [patientRes, visitsRes] = await Promise.all([
-                axiosClient.get(`/patients/${id}`),
-                axiosClient.get(`/patients/${id}/visits`),
-            ]);
+            const [patientRes, visitsRes, riskAssessmentRes] =
+                await Promise.all([
+                    axiosClient.get(`/patients/${id}`),
+                    axiosClient.get(`/patients/${id}/visits`),
+                    axiosClient.get(`/patients/${id}/risk-assessment/check`),
+                ]);
             setPatient(patientRes.data.patient);
             setVisits(visitsRes.data.visits);
+            setHasRiskAssessment(riskAssessmentRes.data.has_assessment);
+            setLatestRiskAssessment(riskAssessmentRes.data.latest_assessment);
+
+            // If patient has a family, load family members
+            if (patientRes.data.patient.family_id) {
+                loadFamilyMembers(patientRes.data.patient.family_id);
+            }
         } catch (err) {
             console.error("Failed to load data:", err);
         } finally {
             setLoading(false);
         }
     };
+
+    const loadFamilyMembers = async (familyId) => {
+        try {
+            const response = await axiosClient.get(`/families/${familyId}`);
+            // Filter out current patient from family members
+            const members = response.data.family.patients.filter(
+                (member) => member.id !== parseInt(id)
+            );
+            setFamilyMembers(members);
+        } catch (err) {
+            console.error("Failed to load family members:", err);
+        }
+    };
+
+    const handleAddToFamily = async (familyId) => {
+        try {
+            await axiosClient.patch(`/patients/${id}/family`, {
+                family_id: familyId,
+            });
+            loadPatientAndVisits();
+            setShowFamilyModal(false);
+        } catch (err) {
+            console.error("Failed to add patient to family:", err);
+        }
+    };
+
+    const handleRemoveFromFamily = async () => {
+        if (
+            !confirm(
+                "Are you sure you want to remove this patient from their family?"
+            )
+        )
+            return;
+
+        try {
+            await axiosClient.patch(`/patients/${id}/family`, {
+                family_id: null,
+            });
+            loadPatientAndVisits();
+        } catch (err) {
+            console.error("Failed to remove patient from family:", err);
+        }
+    };
+
+    const handleRiskAssessmentClick = () => {
+        // If there's an existing assessment, view it by default
+        if (hasRiskAssessment && latestRiskAssessment) {
+            handleDownloadRiskAssessment();
+        } else {
+            // Navigate to risk assessment form with patient data for a new assessment
+            navigate(`/risk-assessment/${id}`);
+        }
+    };
+
+    const handleDownloadRiskAssessment = async () => {
+        try {
+            if (!latestRiskAssessment) return;
+
+            const response = await axiosClient.get(
+                `/risk-assessments/${latestRiskAssessment.id}/download`,
+                { responseType: "blob" }
+            );
+
+            // Create a download link and click it
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute(
+                "download",
+                `RiskAssessment_${patient.full_name}.pdf`
+            );
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (err) {
+            console.error("Failed to download risk assessment:", err);
+        }
+    };
+
     const generatePDF = () => {
         // Create a new div for PDF content
         const pdfContent = document.createElement("div");
@@ -63,6 +157,18 @@ export default function PatientView() {
                                 patient.blood_type || "Not specified"
                             }</td>
                         </tr>
+                        ${
+                            patient.family_id
+                                ? `<tr>
+                                <td style="padding: 5px;"><strong>Family Number:</strong></td>
+                                <td style="padding: 5px;" colspan="3">${
+                                    patient.family
+                                        ? patient.family.family_number
+                                        : "Not available"
+                                }</td>
+                            </tr>`
+                                : ""
+                        }
                     </table>
                 </div>
 
@@ -170,36 +276,78 @@ export default function PatientView() {
     if (!patient) return <div>Patient not found</div>;
 
     return (
-        <div className="p-6">
+        <div className="p-3 sm:p-4 md:p-6">
             <div className="max-w-7xl mx-auto">
-                {/* Header with patient name and add visit button */}
-                <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-2xl font-bold">{patient.full_name}</h1>
-                    <div className="flex gap-2">
+                {/* Header with patient name and buttons */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <h1 className="text-xl uppercase sm:text-2xl font-bold">
+                        {patient.full_name}
+                    </h1>
+                    <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                         <button
                             onClick={() => generatePDF()}
-                            className="bg-violet-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                            className="bg-purple-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
                         >
                             <Download className="w-4 h-4" />
-                            Download PDF
+                            <span>PDF</span>
                         </button>
+
+                        {hasRiskAssessment ? (
+                            <button
+                                onClick={handleDownloadRiskAssessment}
+                                className="bg-purple-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
+                            >
+                                <FileText className="w-4 h-4" />
+                                <span>Assessment</span>
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() =>
+                                    navigate(`/risk-assessment/${id}`)
+                                }
+                                className="bg-purple-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
+                            >
+                                <FileText className="w-4 h-4" />
+                                <span>Assessment</span>
+                            </button>
+                        )}
+
                         <button
                             onClick={() => setShowNewVisitForm(true)}
-                            className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                            className="bg-purple-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
                         >
                             <Plus className="w-4 h-4" />
-                            New Visit
+                            <span>Visit</span>
                         </button>
+
+                        {!patient.family_id ? (
+                            <button
+                                onClick={() => setShowFamilyModal(true)}
+                                className="bg-purple-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
+                            >
+                                <Users className="w-4 h-4" />
+                                <span>Family</span>
+                            </button>
+                        ) : (
+                            <button
+                                onClick={handleRemoveFromFamily}
+                                className="bg-purple-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
+                            >
+                                <Users className="w-4 h-4" />
+                                <span>Unfamily</span>
+                            </button>
+                        )}
                     </div>
                 </div>
+
                 {/* Patient Information Sections */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6">
                     {/* Personal Information */}
-                    <div className="bg-white p-6 rounded-lg shadow">
+                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
                         <h2 className="text-lg font-semibold mb-4">
                             Personal Information
                         </h2>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <p className="text-sm text-gray-600">
                                     Date of Birth
@@ -229,11 +377,29 @@ export default function PatientView() {
                                 </p>
                                 <p>{patient.blood_type || "Not specified"}</p>
                             </div>
+                            {patient.family_id && (
+                                <div className="col-span-1 sm:col-span-2">
+                                    <p className="text-sm text-gray-600">
+                                        Family
+                                    </p>
+                                    <div className="flex items-center">
+                                        <Link
+                                            to={`/families/${patient.family_id}`}
+                                            className="text-blue-600 hover:text-blue-800"
+                                        >
+                                            {patient.family
+                                                ? patient.family.family_number
+                                                : "Family #" +
+                                                  patient.family_id}
+                                        </Link>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
 
                     {/* Contact Information */}
-                    <div className="bg-white p-6 rounded-lg shadow">
+                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
                         <h2 className="text-lg font-semibold mb-4">
                             Contact Information
                         </h2>
@@ -250,13 +416,13 @@ export default function PatientView() {
                             </div>
                             <div>
                                 <p className="text-sm text-gray-600">Address</p>
-                                <p>{patient.address}</p>
+                                <p className="break-words">{patient.address}</p>
                             </div>
                         </div>
                     </div>
 
                     {/* Medical History */}
-                    <div className="bg-white p-6 rounded-lg shadow">
+                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
                         <h2 className="text-lg font-semibold mb-4">
                             Medical History
                         </h2>
@@ -288,7 +454,7 @@ export default function PatientView() {
                     </div>
 
                     {/* Lifestyle Information */}
-                    <div className="bg-white p-6 rounded-lg shadow">
+                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
                         <h2 className="text-lg font-semibold mb-4">
                             Lifestyle Information
                         </h2>
@@ -321,8 +487,85 @@ export default function PatientView() {
                         </div>
                     </div>
                 </div>
+
+                {/* Risk Assessment Section - Only show if patient has a risk assessment */}
+                {hasRiskAssessment && latestRiskAssessment && (
+                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow mb-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-lg font-semibold">
+                                Risk Assessment
+                            </h2>
+                            <button
+                                onClick={handleDownloadRiskAssessment}
+                                className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                            >
+                                <Download className="w-4 h-4" />
+                                <span>Download PDF</span>
+                            </button>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <p className="text-sm text-gray-600">
+                                    Assessment Date
+                                </p>
+                                <p>
+                                    {format(
+                                        new Date(
+                                            latestRiskAssessment.assessment_date
+                                        ),
+                                        "MMM d, yyyy"
+                                    )}
+                                </p>
+                            </div>
+
+                            {latestRiskAssessment.form_data?.bloodSugar && (
+                                <div>
+                                    <p className="text-sm text-gray-600">
+                                        Blood Sugar
+                                    </p>
+                                    <p>
+                                        {
+                                            latestRiskAssessment.form_data
+                                                .bloodSugar
+                                        }
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {/* Family Members Section - Only show if patient has a family */}
+                {patient.family_id && familyMembers.length > 0 && (
+                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow mb-6">
+                        <h2 className="text-lg font-semibold mb-4">
+                            Family Members
+                        </h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {familyMembers.map((member) => (
+                                <Link
+                                    key={member.id}
+                                    to={`/patients/${member.id}`}
+                                    className="block p-4 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                                >
+                                    <div className="font-medium">
+                                        {member.full_name}
+                                    </div>
+                                    <div className="text-sm text-gray-600">
+                                        {format(
+                                            new Date(member.date_of_birth),
+                                            "MMM d, yyyy"
+                                        )}{" "}
+                                        • {member.gender}
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
                 {/* Visits History */}
-                <div className="bg-white p-6 rounded-lg shadow">
+                <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
                     <h2 className="text-lg font-semibold mb-4">
                         Visit History
                     </h2>
@@ -330,48 +573,59 @@ export default function PatientView() {
                         <table className="min-w-full">
                             <thead className="bg-gray-50">
                                 <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                         Date
                                     </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                         Vital Signs
                                     </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                         Present Illness
                                     </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                         Diagnosis
                                     </th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200">
-                                {visits.map((visit) => (
-                                    <tr key={visit.id}>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            {format(
-                                                new Date(visit.created_at),
-                                                "MMM d, yyyy"
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div>
-                                                BP: {visit.blood_pressure}
-                                            </div>
-                                            <div>
-                                                HR: {visit.heart_rate} bpm
-                                            </div>
-                                            <div>
-                                                Temp: {visit.temperature}°C
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {visit.present_illness}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {visit.diagnosis}
+                                {visits.length === 0 ? (
+                                    <tr>
+                                        <td
+                                            colSpan="4"
+                                            className="px-3 sm:px-6 py-4 text-center text-gray-500"
+                                        >
+                                            No visits recorded
                                         </td>
                                     </tr>
-                                ))}
+                                ) : (
+                                    visits.map((visit) => (
+                                        <tr key={visit.id}>
+                                            <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                                                {format(
+                                                    new Date(visit.created_at),
+                                                    "MMM d, yyyy"
+                                                )}
+                                            </td>
+                                            <td className="px-3 sm:px-6 py-3 sm:py-4">
+                                                <div>
+                                                    BP: {visit.blood_pressure}
+                                                </div>
+                                                <div>
+                                                    HR: {visit.heart_rate} bpm
+                                                </div>
+                                                <div>
+                                                    Temp: {visit.temperature}°C
+                                                </div>
+                                            </td>
+                                            <td className="px-3 sm:px-6 py-3 sm:py-4">
+                                                {visit.present_illness}
+                                            </td>
+                                            <td className="px-3 sm:px-6 py-3 sm:py-4">
+                                                {visit.diagnosis}
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
                             </tbody>
                         </table>
                     </div>
@@ -387,6 +641,14 @@ export default function PatientView() {
                         setShowNewVisitForm(false);
                         loadPatientAndVisits();
                     }}
+                />
+            )}
+
+            {/* Family Modal */}
+            {showFamilyModal && (
+                <SelectFamilyModal
+                    onClose={() => setShowFamilyModal(false)}
+                    onSelectFamily={handleAddToFamily}
                 />
             )}
         </div>

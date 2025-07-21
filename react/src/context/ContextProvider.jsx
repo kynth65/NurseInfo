@@ -25,11 +25,6 @@ export const ContextProvider = ({ children }) => {
     });
 
     const setUser = (user) => {
-        console.log("Setting user in context:", user);
-        if (user && !user.role) {
-            console.error("Attempting to set user without role:", user);
-            return;
-        }
         _setUser(user);
         if (user) {
             localStorage.setItem("USER", JSON.stringify(user));
