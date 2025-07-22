@@ -12,11 +12,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\RiskAssessmentController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-*/
+
 
 // Public routes
 Route::post('/signup', [AuthController::class, 'signup']);
