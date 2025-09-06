@@ -1,66 +1,221 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# NurseInfo - Healthcare Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A comprehensive healthcare management system built for nurses and healthcare professionals to efficiently manage patient records, track medical visits, monitor inventory, and conduct risk assessments.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Patient Management
+- Complete patient registration with demographic information
+- Comprehensive medical history tracking (past illnesses, allergies, medications)
+- Family medical history and relationship management
+- Emergency contact information
+- Lifestyle information (smoking, alcohol, exercise, diet)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Visit Management
+- Track patient visits with detailed vital signs
+- Record blood pressure, heart rate, temperature, respiratory rate
+- Monitor patient weight, height, and BMI calculations
+- Document present illness, symptoms, and diagnosis
+- Complete visit history for each patient
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Medical Records
+- Detailed medical history per patient
+- Allergy tracking and medication management
+- Previous surgeries and hospitalization records
+- Immunization history tracking
+- Family medical history documentation
 
-## Learning Laravel
+### Inventory Management
+- Medicine inventory tracking
+- Transaction logging for medicine stock
+- Real-time inventory updates
+- Medicine usage monitoring
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Risk Assessment
+- Comprehensive patient risk assessments
+- PDF report generation
+- Patient-specific risk evaluation
+- Assessment history tracking
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Family Management
+- Group patients by family relationships
+- Track family medical history
+- Manage family member connections
+- Family-wide medical pattern analysis
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Event Scheduling
+- Healthcare appointment scheduling
+- Event management for patients
+- Visit scheduling and tracking
 
-## Laravel Sponsors
+## Technology Stack
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Backend
+- **Laravel 11** - PHP framework for robust API development
+- **Laravel Sanctum** - API authentication system
+- **PostgreSQL** - Primary database for data persistence
+- **PHP 8.2+** - Modern PHP for enhanced performance
 
-### Premium Partners
+### Frontend
+- **React** - Modern JavaScript library for user interface
+- **Vite** - Fast build tool and development server
+- **Tailwind CSS** - Utility-first CSS framework
+- **Axios** - HTTP client for API communication
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### Development Tools
+- **Composer** - PHP dependency management
+- **npm** - Node package management
+- **Laravel Pint** - PHP code style fixer
+- **PHPUnit** - PHP testing framework
+
+## Installation
+
+### Prerequisites
+- PHP 8.2 or higher
+- Node.js and npm
+- PostgreSQL database
+- Composer
+
+### Backend Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone [repository-url]
+   cd NurseInfo
+   ```
+
+2. **Install PHP dependencies**
+   ```bash
+   composer install
+   ```
+
+3. **Environment configuration**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+4. **Database setup**
+   - Configure your PostgreSQL database in `.env`
+   - Run migrations:
+   ```bash
+   php artisan migrate
+   ```
+
+5. **Start the Laravel server**
+   ```bash
+   php artisan serve
+   ```
+
+### Frontend Setup
+
+1. **Navigate to React directory**
+   ```bash
+   cd react
+   ```
+
+2. **Install Node dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start development server**
+   ```bash
+   npm run dev
+   ```
+
+## API Endpoints
+
+### Authentication
+- `POST /api/signup` - User registration
+- `POST /api/login` - User authentication
+- `POST /api/logout` - User logout
+
+### Patient Management
+- `GET /api/patients` - List all patients
+- `POST /api/patients` - Create new patient
+- `GET /api/patients/{id}` - Get patient details
+- `PUT /api/patients/{id}` - Update patient information
+- `DELETE /api/patients/{id}` - Delete patient record
+
+### Visit Management
+- `GET /api/patients/{id}/visits` - Get patient visits
+- `POST /api/patients/{id}/visits` - Create new visit
+- `GET /api/visits/latest` - Get latest visits across all patients
+
+### Medical Records
+- `GET /api/patients/{id}/medical-history` - Get medical history
+- `PATCH /api/patients/{id}/medical-history` - Update medical history
+
+### Inventory Management
+- `GET /api/medicines` - List medicines
+- `POST /api/medicines` - Add new medicine
+- `POST /api/inventory-transactions` - Record transaction
+
+### Risk Assessment
+- `POST /api/risk-assessments` - Create risk assessment
+- `GET /api/patients/{id}/risk-assessments` - Get patient assessments
+- `GET /api/risk-assessments/{id}/download` - Download PDF report
+
+## Database Schema
+
+### Core Tables
+- **users** - System user accounts
+- **patients** - Patient demographic and medical information
+- **visits** - Patient visit records and vital signs
+- **families** - Family relationship management
+- **medicines** - Medicine inventory
+- **inventory_transactions** - Stock movement tracking
+- **risk_assessments** - Patient risk evaluation records
+- **events** - Appointment and event scheduling
+
+## Development
+
+### Running Tests
+```bash
+php artisan test
+```
+
+### Code Style
+```bash
+./vendor/bin/pint
+```
+
+### Development Server
+```bash
+composer run dev
+```
+This command runs Laravel server, queue worker, logs, and Vite development server concurrently.
+
+## Project Structure
+
+```
+├── app/
+│   ├── Http/Controllers/Api/    # API controllers
+│   ├── Models/                  # Eloquent models
+│   └── Http/Requests/          # Form request validation
+├── database/
+│   └── migrations/             # Database schema migrations
+├── routes/
+│   └── api.php                 # API route definitions
+├── react/                      # React frontend application
+│   ├── src/                    # React source code
+│   └── public/                 # Static assets
+└── resources/                  # Laravel resources
+```
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/new-feature`)
+3. Commit your changes (`git commit -m 'Add some feature'`)
+4. Push to the branch (`git push origin feature/new-feature`)
+5. Open a Pull Request
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Contact
+
+For questions or support regarding this healthcare management system, please refer to the project documentation or submit an issue through the repository's issue tracker.
